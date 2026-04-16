@@ -39,20 +39,15 @@ import Contact from '../components/Contact.astro';
 <style is:global>
   @import url('https://fonts.googleapis.com/css2?family=Lexend:wght@300;400&display=swap');
 
-  .no-scrollbar::-webkit-scrollbar {
-    display: none;
-  }
-  .no-scrollbar {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
+  /* Ensure parents don't clip the book covers */
+  body, main, #books {
+    overflow-x: hidden;
+    overflow-y: visible !important;
   }
 
-  /* Ensure the sections have enough space for the covers to pop out */
-  #books {
-    z-index: 5;
-    position: relative;
-  }
-  
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
   html {
     scroll-behavior: smooth;
     background: black;
