@@ -1,0 +1,88 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Sans:wght@300;400;500&family=JetBrains+Mono:wght@300;400&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── Reset ─────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; background: #000; }
+
+body {
+  background: #000;
+  color: #F5F5F5;
+  font-family: 'DM Sans', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* ── Custom cursor ──────────────────────────────── */
+* { cursor: none !important; }
+
+#cursor {
+  position: fixed;
+  width: 10px; height: 10px;
+  background: white;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%, -50%);
+  transition: width 0.3s ease, height 0.3s ease, opacity 0.3s ease;
+  mix-blend-mode: difference;
+}
+#cursor.hovering { width: 36px; height: 36px; opacity: 0.5; }
+
+/* ── Scrollbar ──────────────────────────────────── */
+::-webkit-scrollbar { width: 2px; }
+::-webkit-scrollbar-track { background: #000; }
+::-webkit-scrollbar-thumb { background: #222; }
+
+/* ── Selection ──────────────────────────────────── */
+::selection { background: rgba(255,255,255,0.12); color: #fff; }
+
+/* ── Grain overlay ──────────────────────────────── */
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 9998;
+  opacity: 0.45;
+}
+
+/* ── Glow button ────────────────────────────────── */
+.btn-glow {
+  position: relative; overflow: hidden;
+  border: 1px solid rgba(255,255,255,0.18);
+  background: transparent; color: white;
+  transition: border-color 0.3s ease;
+  text-decoration: none;
+  display: inline-flex; align-items: center;
+}
+.btn-glow::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(circle at center, rgba(255,255,255,0.1) 0%, transparent 70%);
+  opacity: 0; transition: opacity 0.4s ease;
+}
+.btn-glow:hover::before { opacity: 1; }
+.btn-glow:hover { border-color: rgba(255,255,255,0.45); }
+
+/* ── B&W image hover (used in non-3D contexts) ──── */
+.bw-image {
+  filter: grayscale(100%) contrast(1.05);
+  transition: filter 0.6s ease;
+}
+.bw-image:hover { filter: grayscale(0%) contrast(1); }
+
+/* ── Section reveal animation ───────────────────── */
+.section-reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  animation: sectionUp 0.9s cubic-bezier(0.16,1,0.3,1) forwards;
+  animation-play-state: paused;
+}
+@keyframes sectionUp {
+  to { opacity: 1; transform: translateY(0); }
+}

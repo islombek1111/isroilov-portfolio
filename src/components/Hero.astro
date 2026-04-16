@@ -1,0 +1,88 @@
+---
+// Hero.astro
+// Put your photo at: public/images/hero.jpg
+// Then change "hero-placeholder.jpg" below to "hero.jpg"
+---
+
+<section id="home" class="relative min-h-screen flex flex-col justify-end pb-16 md:pb-24 px-6 md:px-12 overflow-hidden">
+
+  <!-- Background photo -->
+  <div class="absolute inset-0 z-0">
+    <img
+      src="/images/hero.jpg"
+      alt="Islombek Isroilov"
+      class="w-full h-full object-cover object-top opacity-60"
+      style="filter: grayscale(100%) contrast(1.05);"
+    />
+    <div class="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent"></div>
+    <div class="absolute inset-0 bg-gradient-to-r from-black/55 via-transparent to-transparent"></div>
+  </div>
+
+  <!-- Vertical decorative line -->
+  <div class="absolute left-6 md:left-12 top-0 bottom-0 w-px z-10 overflow-hidden" aria-hidden="true">
+    <div style="animation: lineGrow 2s 0.5s cubic-bezier(0.16,1,0.3,1) forwards; height:0%; width:100%; background: linear-gradient(to bottom, transparent, rgba(255,255,255,0.18), transparent);"></div>
+  </div>
+
+  <!-- Content -->
+  <div class="relative z-10 max-w-7xl mx-auto w-full">
+
+    <div class="flex items-center gap-4 mb-6" style="opacity:0; animation: fadeUp 1s 0.3s cubic-bezier(0.16,1,0.3,1) forwards;">
+      <span class="w-8 h-px bg-white/35"></span>
+      <span class="font-mono text-[10px] tracking-[0.35em] uppercase text-white/35">Islombek Isroilov</span>
+    </div>
+
+    <div class="overflow-hidden mb-4">
+      <h1 class="font-display font-light leading-[0.9] tracking-[0.12em] text-white"
+        style="font-size: clamp(3.5rem,12vw,10rem); opacity:0; animation: nameReveal 1.4s 0.4s cubic-bezier(0.16,1,0.3,1) forwards;">
+        ISROILOV
+      </h1>
+    </div>
+
+    <div class="overflow-hidden mb-10">
+      <p class="font-display italic font-light text-white/48 tracking-[0.04em]"
+        style="font-size: clamp(1.1rem,3vw,2.2rem); opacity:0; animation: fadeUp 1s 0.8s cubic-bezier(0.16,1,0.3,1) forwards;">
+        Just a man doing whatever comes to mind.
+      </p>
+    </div>
+
+    <!-- Expanding divider -->
+    <div class="h-px w-full bg-white/5 mb-10 overflow-hidden">
+      <div style="height:100%; width:0%; background: linear-gradient(to right, rgba(255,255,255,0.28), rgba(255,255,255,0.08), transparent); animation: lineExpand 1.5s 0.9s cubic-bezier(0.16,1,0.3,1) forwards;"></div>
+    </div>
+
+    <!-- Bio + CTAs -->
+    <div class="flex flex-col md:flex-row items-start md:items-end justify-between gap-8"
+      style="opacity:0; animation: fadeUp 1s 1.1s cubic-bezier(0.16,1,0.3,1) forwards;">
+      <p class="font-body font-light text-sm md:text-base text-white/38 max-w-sm leading-relaxed tracking-wide">
+        Curious about everything.
+        <br/>Committed to nothing in particular.
+      </p>
+      <div class="flex items-center gap-5">
+        <a href="#pics" data-hover class="btn-glow px-7 py-3 text-xs tracking-[0.25em] uppercase font-body rounded-full">
+          See My Stuff
+        </a>
+        <a href="#contact" data-hover
+          class="font-body text-xs tracking-[0.25em] uppercase text-white/38 hover:text-white transition-colors duration-300 flex items-center gap-2">
+          Say Hello <span class="text-lg leading-none">→</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scroll indicator -->
+  <div class="absolute bottom-8 right-6 md:right-12 z-10 flex flex-col items-center gap-3"
+    style="opacity:0; animation: fadeUp 1s 1.4s cubic-bezier(0.16,1,0.3,1) forwards;">
+    <span class="font-mono text-[9px] tracking-[0.3em] uppercase text-white/22" style="writing-mode:vertical-lr;">Scroll</span>
+    <div class="w-px h-12 overflow-hidden" style="background: linear-gradient(to bottom, rgba(255,255,255,0.18), transparent);">
+      <div style="width:100%; height:30%; background:rgba(255,255,255,0.6); animation: scrollLine 2s 1.5s ease-in-out infinite; top:-30%; position:relative;"></div>
+    </div>
+  </div>
+</section>
+
+<style>
+  @keyframes lineGrow    { to { height: 100%; } }
+  @keyframes fadeUp      { from { opacity:0; transform:translateY(24px); } to { opacity:1; transform:translateY(0); } }
+  @keyframes nameReveal  { from { opacity:0; letter-spacing:0.4em; transform:translateY(20px); } to { opacity:1; letter-spacing:0.12em; transform:translateY(0); } }
+  @keyframes lineExpand  { to { width: 100%; } }
+  @keyframes scrollLine  { 0% { top:-30%; } 100% { top:130%; } }
+</style>
