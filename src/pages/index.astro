@@ -3,6 +3,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Navigation from '../components/Navigation.astro';
 import Hero from '../components/Hero.astro';
 import FannedGallery from '../components/FannedGallery.jsx';
+import Books from '../components/Books.jsx';
 import Contact from '../components/Contact.astro';
 ---
 
@@ -14,12 +15,7 @@ import Contact from '../components/Contact.astro';
   <FannedGallery client:load />
 
   <!-- BOOKS placeholder — we'll build this next -->
-  <section id="books" class="min-h-screen flex items-center justify-center px-6 md:px-12">
-    <div class="text-center">
-      <p class="font-mono text-xs tracking-[0.3em] uppercase text-white/12 mb-4">Coming Next</p>
-      <h2 class="font-display text-5xl md:text-7xl font-light tracking-widest text-white/8">Books</h2>
-    </div>
-  </section>
+ <Books client:visible />
 
   <!-- CERTS placeholder -->
   <section id="certs" class="min-h-screen flex items-center justify-center px-6 md:px-12">
@@ -39,3 +35,20 @@ import Contact from '../components/Contact.astro';
 
   <Contact />
 </BaseLayout>
+
+  <style is:global>
+  /* This hides the scrollbar while allowing scrolling on the book shelf */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
+
+  /* Optional: Adds a premium smooth scroll behavior to the whole site */
+  html {
+    scroll-behavior: smooth;
+    background: black;
+  }
+</style>
