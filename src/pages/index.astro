@@ -36,17 +36,23 @@ import Contact from '../components/Contact.astro';
   <Contact />
 </BaseLayout>
 
-  <style is:global>
-  /* This hides the scrollbar while allowing scrolling on the book shelf */
+<style is:global>
+  @import url('https://fonts.googleapis.com/css2?family=Lexend:wght@300;400&display=swap');
+
   .no-scrollbar::-webkit-scrollbar {
     display: none;
   }
   .no-scrollbar {
-    -ms-overflow-style: none;  /* IE and Edge */
-    scrollbar-width: none;  /* Firefox */
+    -ms-overflow-style: none;
+    scrollbar-width: none;
   }
 
-  /* Optional: Adds a premium smooth scroll behavior to the whole site */
+  /* Ensure the sections have enough space for the covers to pop out */
+  #books {
+    z-index: 5;
+    position: relative;
+  }
+  
   html {
     scroll-behavior: smooth;
     background: black;
