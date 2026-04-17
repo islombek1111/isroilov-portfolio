@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 
@@ -15,6 +15,7 @@ const bookList = [
   { id: 10, title: "Letters from a Stoic", cover: "/images/books/p10.jpg" },
 ];
 
+
 const Books = () => {
   const [activeId, setActiveId] = useState(bookList[0].id);
   const [loadingId, setLoadingId] = useState(null);
@@ -22,80 +23,77 @@ const Books = () => {
   const currentBook = bookList.find(b => b.id === activeId);
   const premiumEase = [0.16, 1, 0.3, 1];
 
-  const handleHover = (id) => {
-    setLoadingId(id);
-  };
-
-  // Logic to "throw" the book once the bar is full
   useEffect(() => {
     if (loadingId && loadingId !== activeId) {
       const timer = setTimeout(() => {
         setActiveId(loadingId);
-      }, 400); // Speed of the "load"
+      }, 350); 
       return () => clearTimeout(timer);
     }
   }, [loadingId, activeId]);
 
   return (
-    <section id="books" className="py-32 px-6 md:px-12 bg-black relative">
-      <div className="max-w-6xl mx-auto flex flex-col md:flex-row gap-12 items-start">
+    <section id="books" className="py-24 md:py-32 px-6 md:px-12 bg-black min-h-screen">
+      {/* Centered Minimalist Divider instead of Archive Index */}
+      <div className="flex flex-col items-center mb-24 opacity-20">
+        <div className="w-px h-12 bg-white mb-4"></div>
+        <span className="font-mono text-[9px] tracking-[0.5em] uppercase text-white">The Collection</span>
+      </div>
+
+      <div className="max-w-6xl mx-auto flex flex-col md:flex-row gap-8 md:gap-20 items-center justify-between">
         
-        {/* LEFT: Scrollable Title List */}
-        <div className="w-full md:w-3/5 space-y-1">
-          <div className="flex items-center gap-4 mb-16 opacity-20">
-            <span className="w-8 h-px bg-white"></span>
-            <span className="font-mono text-[9px] tracking-[0.4em] uppercase text-white">Archive Index</span>
-          </div>
+        {/* LEFT: Independent Scrollable Title List */}
+        <div className="w-full md:w-1/2 h-[500px] overflow-y-auto no-scrollbar pr-4">
+          <div className="space-y-1">
+            {bookList.map((book) => (
+              <div 
+                key={book.id}
+                className="relative group py-6 cursor-crosshair"
+                onMouseEnter={() => setLoadingId(book.id)}
+                onMouseLeave={() => setLoadingId(null)}
+              >
+                <span className={`block font-display text-xs md:text-sm tracking-[0.35em] uppercase transition-all duration-700
+                  ${activeId === book.id ? 'text-white translate-x-4' : 'text-white/15 group-hover:text-white/40'}`}
+                  style={{ fontFamily: "'Lexend', sans-serif" }}>
+                  {book.title}
+                </span>
 
-          {bookList.map((book) => (
-            <div 
-              key={book.id}
-              className="relative group py-5 cursor-crosshair"
-              onMouseEnter={() => handleHover(book.id)}
-              onMouseLeave={() => setLoadingId(null)}
-            >
-              <span className={`block font-display text-xs md:text-sm tracking-[0.3em] uppercase transition-all duration-700
-                ${activeId === book.id ? 'text-white translate-x-3' : 'text-white/20 group-hover:text-white/50'}`}
-                style={{ fontFamily: "'Lexend', sans-serif" }}>
-                {book.title}
-              </span>
-
-              {/* The "Launcher" Loading Bar */}
-              <div className="absolute bottom-0 left-0 w-full h-[1px] bg-white/5">
-                <motion.div 
-                  initial={{ width: 0 }}
-                  animate={{ 
-                    width: loadingId === book.id ? "100%" : (activeId === book.id ? "100%" : "0%"),
-                    opacity: loadingId === book.id || activeId === book.id ? 1 : 0
-                  }}
-                  transition={{ duration: 0.4, ease: "circOut" }}
-                  className="h-full bg-white shadow-[0_0_10px_#fff]"
-                />
+                {/* The Launcher Bar */}
+                <div className="absolute bottom-0 left-0 w-full h-[1px] bg-white/5">
+                  <motion.div 
+                    initial={{ width: 0 }}
+                    animate={{ 
+                      width: loadingId === book.id ? "100%" : (activeId === book.id ? "100%" : "0%"),
+                      opacity: loadingId === book.id || activeId === book.id ? 1 : 0
+                    }}
+                    transition={{ duration: 0.35, ease: "circOut" }}
+                    className="h-full bg-white shadow-[0_0_15px_#fff]"
+                  />
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
 
-        {/* RIGHT: Fixed Preview Panel */}
-        <div className="w-full md:w-2/5 sticky top-32 flex justify-center">
-          <div className="relative w-full max-w-[320px] aspect-[3/4] group">
+        {/* RIGHT: Truly Fixed Preview Area */}
+        <div className="w-full md:w-2/5 flex justify-center">
+          <div className="relative w-full max-w-[300px] aspect-[3/4.5]">
             <AnimatePresence mode="wait">
               <motion.div
                 key={activeId}
-                initial={{ opacity: 0, x: -30, scale: 0.9, filter: 'blur(15px)' }}
-                animate={{ opacity: 1, x: 0, scale: 1, filter: 'blur(0px)' }}
-                exit={{ opacity: 0, x: 30, scale: 1.1, filter: 'blur(15px)' }}
-                transition={{ duration: 0.7, ease: premiumEase }}
+                initial={{ opacity: 0, y: 20, scale: 0.95, filter: 'blur(10px)' }}
+                animate={{ opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' }}
+                exit={{ opacity: 0, y: -20, scale: 1.05, filter: 'blur(10px)' }}
+                transition={{ duration: 0.6, ease: premiumEase }}
                 className="absolute inset-0 flex items-center justify-center"
               >
-                <div className="relative w-full h-full overflow-hidden border border-white/10 shadow-[0_50px_100px_-20px_rgba(0,0,0,1)] bg-zinc-900">
+                <div className="relative w-full h-full bg-zinc-950 border border-white/5 shadow-[0_60px_100px_-30px_rgba(0,0,0,1)] rounded-sm overflow-hidden p-6">
                   <img 
                     src={currentBook.cover} 
                     alt="" 
-                    className="w-full h-full object-contain p-4" // object-contain ensures no cropping
+                    className="w-full h-full object-contain"
                   />
-                  {/* Subtle inner light */}
-                  <div className="absolute inset-0 pointer-events-none bg-gradient-to-tr from-black/20 via-transparent to-white/5" />
+                  <div className="absolute inset-0 pointer-events-none ring-1 ring-inset ring-white/10" />
                 </div>
               </motion.div>
             </AnimatePresence>
