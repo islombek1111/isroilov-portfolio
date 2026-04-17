@@ -39,17 +39,21 @@ import Contact from '../components/Contact.astro';
 <style is:global>
   @import url('https://fonts.googleapis.com/css2?family=Lexend:wght@300;400&display=swap');
 
-  /* Ensure parents don't clip the book covers */
-  body, main, #books {
+  /* Crucial for the Sticky Preview */
+  html, body {
+    background-color: black;
+    color: white;
     overflow-x: hidden;
-    overflow-y: visible !important;
   }
 
-  .no-scrollbar::-webkit-scrollbar { display: none; }
-  .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  /* Smooth out the whole page feel */
+  * {
+    selection-background: rgba(255, 255, 255, 0.99);
+    selection-color: black;
+  }
 
-  html {
-    scroll-behavior: smooth;
-    background: black;
+  section {
+    position: relative;
+    z-index: 1;
   }
 </style>
