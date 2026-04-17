@@ -39,21 +39,31 @@ import Contact from '../components/Contact.astro';
 <style is:global>
   @import url('https://fonts.googleapis.com/css2?family=Lexend:wght@300;400&display=swap');
 
-  /* Crucial for the Sticky Preview */
+  /* VITAL FOR STICKY: 
+     Parent containers must have visible overflow for sticky to lock in place.
+  */
   html, body {
     background-color: black;
     color: white;
-    overflow-x: hidden;
+    /* Prevent horizontal scroll but allow vertical sticky behavior */
+    overflow-x: hidden; 
+    overflow-y: visible !important;
   }
 
-  /* Smooth out the whole page feel */
-  * {
-    selection-background: rgba(255, 255, 255, 0.99);
-    selection-color: black;
+  main {
+    overflow: visible !important;
   }
 
-  section {
-    position: relative;
-    z-index: 1;
+  /* Keep your custom scrollbar reset */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  html {
+    scroll-behavior: smooth;
   }
 </style>
