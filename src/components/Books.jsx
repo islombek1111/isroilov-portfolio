@@ -81,7 +81,7 @@ const bookList = [
     readDate: "February 2026",
     verdict: "Ancient wisdom that still feels surprisingly useful today.",
     thoughts: "Seneca’s letters are full of practical ancient wisdom that still hits today. Some parts feel repetitive but many lines are gold. I keep coming back to it when life gets stressful."
-  },
+  }
 ];
 
 const Books = () => {
