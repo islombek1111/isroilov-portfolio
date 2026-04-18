@@ -37,9 +37,9 @@ import Contact from '../components/Contact.astro';
 </BaseLayout>
 
 <style is:global>
-  @import url('https://fonts.googleapis.com/css2?family=Lexend:wght@300;400&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Lexend:wght@200;300;400&display=swap');
 
-  /* Global scrollbar hiding for specific elements */
+  /* Global Scrollbar Hiding */
   .no-scrollbar::-webkit-scrollbar {
     display: none;
   }
@@ -48,29 +48,14 @@ import Contact from '../components/Contact.astro';
     scrollbar-width: none;
   }
 
-  html, body {
-    background-color: black;
-    color: white;
-    overflow-x: hidden;
-  }
-
-  /* Keep site transitions smooth */
-  section {
-    position: relative;
-    z-index: 1;
-  }
-
- .perspective-1000 {
+  /* Necessary for 3D flip */
+  .perspective-1000 {
     perspective: 1000px;
   }
 
-  .backface-hidden {
-    backface-visibility: hidden;
-    -webkit-backface-visibility: hidden;
-  }
-
-  /* Ensure Lexend is used throughout */
-  .font-lexend {
-    font-family: 'Lexend', sans-serif;
+  html {
+    background-color: black;
+    color: white;
+    scroll-behavior: smooth;
   }
 </style>
