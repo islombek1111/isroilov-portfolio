@@ -15,8 +15,8 @@ const bookList = [
     title: "The Value of Everything", 
     cover: "/images/books/p2.jpg",
     readDate: "January 2026",
-    verdict: "Eye-opening book about how we completely mess up what we call value in the economy.",
-    thoughts: "This book messed with my head about what we actually value in the economy. Mazzucato makes a strong case that a lot of "value" is just rich people extracting money. Some parts dragged but the main idea is powerful and stuck with me."
+    verdict: 'Eye-opening book about how we completely mess up what we call "value" in the economy.',
+    thoughts: 'This book messed with my head about what we actually value in the economy. Mazzucato makes a strong case that a lot of "value" is just rich people extracting money. Some parts dragged but the main idea is powerful and stuck with me.'
   },
   { 
     id: 3, 
@@ -39,8 +39,8 @@ const bookList = [
     title: "The Bottom Billion", 
     cover: "/images/books/p5.jpg",
     readDate: "February 2026",
-    verdict: "Still one of the smartest books on why the poorest countries stay stuck.",
-    thoughts: "Colliers four traps make a lot of sense. Not the most exciting read but honest and practical. Changed how I think about global poverty."
+    verdict: 'Still one of the smartest books on why the poorest countries stay stuck.',
+    thoughts: 'Colliers four traps make a lot of sense. Not the most exciting read but honest and practical. Changed how I think about global poverty.'
   },
     { 
     id: 6, 
