@@ -141,6 +141,16 @@ const Books = () => {
                 className="relative group py-6 cursor-crosshair"
                 onMouseEnter={() => setLoadingId(book.id)}
               >
+     <AnimatePresence>
+             {(activeId === book.id || loadingId === book.id) && (
+               <motion.div 
+              initial={{ opacity: 0, x: -10 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -10 }}
+              className="absolute left-0 top-1/2 -translate-y-1/2 w-1.5 h-1.5 bg-white rounded-full shadow-[0_0_12px_rgba(255,255,255,0.8)] z-10"
+            />
+          )}
+        </AnimatePresence>
                 <span className={`block text-xs md:text-sm tracking-[0.3em] uppercase transition-all duration-700 font-['Lexend']
                   ${activeId === book.id ? 'text-white translate-x-4' : 'text-white/15 group-hover:text-white/40'}`}>
                   {book.title}
