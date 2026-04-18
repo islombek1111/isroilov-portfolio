@@ -4,6 +4,7 @@ import Navigation from '../components/Navigation.astro';
 import Hero from '../components/Hero.astro';
 import FannedGallery from '../components/FannedGallery.jsx';
 import Books from '../components/Books.jsx';
+import Certs from '../components/Certs.jsx';
 import Contact from '../components/Contact.astro';
 ---
 
@@ -11,19 +12,14 @@ import Contact from '../components/Contact.astro';
   <Navigation />
   <Hero />
 
-  <!-- PICS — 3D fanned gallery (React component) -->
+  <!-- PICS section -->
   <FannedGallery client:load />
 
-  <!-- BOOKS placeholder — we'll build this next -->
+  <!-- BOOKS placeholder -->
  <Books client:visible />
 
   <!-- CERTS placeholder -->
-  <section id="certs" class="min-h-screen flex items-center justify-center px-6 md:px-12">
-    <div class="text-center">
-      <p class="font-mono text-xs tracking-[0.3em] uppercase text-white/12 mb-4">Coming Next</p>
-      <h2 class="font-display text-5xl md:text-7xl font-light tracking-widest text-white/8">Certs</h2>
-    </div>
-  </section>
+<Certs client:visible />
 
   <!-- NOTES placeholder -->
   <section id="notes" class="min-h-screen flex items-center justify-center px-6 md:px-12">
