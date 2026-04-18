@@ -6,19 +6,84 @@ const bookList = [
     id: 1, 
     title: "How Tyrants Fall", 
     cover: "/images/books/p1.jpg",
-    readDate: "March 2026",
-    verdict: "A chillingly precise anatomy of power and its inevitable decay.",
-    thoughts: "Dirsussen's analysis of modern autocracies is a wake-up call. It's not just about the dictators, but the systems that sustain them. Essential for understanding the current global shift."
+    readDate: "February 2026",
+    verdict: "Really solid breakdown of how dictators actually lose power these days.",
+    thoughts: "Really good look at how modern dictators actually lose power. I expected it to be dry but the real-world examples kept it interesting. Shows how fragile these regimes are once fear and loyalty fade. Made me see current events differently."
   },
   { 
     id: 2, 
     title: "The Value of Everything", 
     cover: "/images/books/p2.jpg",
-    readDate: "February 2026",
-    verdict: "The most important economic rethink of the decade.",
-    thoughts: "Mazzucato successfully argues that we've confused price with value. It completely changed how I look at the 'innovation' claims of big tech versus the foundational role of the state."
+    readDate: "January 2026",
+    verdict: "Eye-opening book about how we completely mess up what we call “value” in the economy.",
+    thoughts: "This book messed with my head about what we actually value in the economy. Mazzucato makes a strong case that a lot of "value" is just rich people extracting money. Some parts dragged but the main idea is powerful and stuck with me."
   },
-  // Add more books with thoughts...
+  { 
+    id: 3, 
+    title: "Why Nations Fail", 
+    cover: "/images/books/p3.jpg",
+    readDate: "December 2025",
+    verdict: "One of the best big-picture books I’ve read on why some countries get rich and others stay poor.",
+    thoughts: "The institutions argument is super convincing. Got a bit repetitive but the historical examples are excellent. Definitely changed how I view politics and economics."
+  },
+    { 
+    id: 4, 
+    title: "Big Lies", 
+    cover: "/images/books/p4.jpg",
+    readDate: "March 2026",
+    verdict: "Sharp look at how lies and propaganda shape politics.",
+    thoughts: "Felt a bit one-sided at times but it’s well-researched and made me more aware of how narratives get pushed. Eye-opening, especially in today’s climate."
+  },
+    { 
+    id: 5, 
+    title: "The Bottom Billion", 
+    cover: "/images/books/p5.jpg",
+    readDate: "February 2026",
+    verdict: "Still one of the smartest books on why the poorest countries stay stuck.",
+    thoughts: "Collier’s four traps make a lot of sense. Not the most exciting read but honest and practical. Changed how I think about global poverty."
+  },
+    { 
+    id: 6, 
+    title: "Power Witout Glory", 
+    cover: "/images/books/p6.jpg",
+    readDate: "March 2026",
+    verdict: "Dark, gripping novel about power, corruption and ambition.",
+    thoughts: "Based on real politics but reads like a slow train wreck. Long but worth it — really shows how power changes people. Underrated classic"
+  },
+    { 
+    id: 7, 
+    title: "Scorched Earth", 
+    cover: "/images/books/p7.jpg",
+    readDate: "April 2026",
+    verdict: "Angry but very readable take on how the left is destroying the country.",
+    thoughts: "Captures a lot of the frustration with the left’s cultural changes. More rant than deep analysis but quick and entertaining if you’re in the mood for it."
+  },
+    { 
+    id: 8, 
+    title: "Original Sin", 
+    cover: "/images/books/p8.jpg",
+    readDate: "March 2026",
+    verdict: "A slow-burn crime novel with real psychological depth.",
+    thoughts: "The psychological side and exploration of guilt is what I loved most. Not fast-paced but very well done. Proper literary crime novel."
+  },
+    { 
+    id: 9, 
+    title: "KEYNES", 
+    cover: "/images/books/p9.jpg",
+    readDate: "January 2026",
+    verdict: "Heavy but incredibly influential book that shaped modern economics.",
+    thoughts: "Keynes’ ideas still shape modern economics and government policy. More of a “need to know” book than enjoyable one."
+  },
+    { 
+    id: 10, 
+    title: "Letters from a Stoic", 
+    cover: "/images/books/p310.jpg",
+    readDate: "February 2026",
+    verdict: "Ancient wisdom that still feels surprisingly useful today.",
+    thoughts: "Seneca’s letters are full of practical ancient wisdom that still hits today. Some parts feel repetitive but many lines are gold. I keep coming back to it when life gets stressful."
+  },
+
+
 ];
 
 const Books = () => {
@@ -43,11 +108,11 @@ const Books = () => {
   }, [loadingId, activeId]);
 
   return (
-    <section id="books" className="py-24 md:py-32 px-6 md:px-12 bg-black min-h-screen font-['Lexend']">
+    <section id="books" className="scroll-mt-20 pt-0 pb-24 md:pb-32 px-6 md:px-12 bg-black min-h-screen font-['Lexend']">
       
       {/* 1. MASTER SWITCHER */}
       <div className="flex flex-col items-center mb-20">
-        <div className="flex items-center gap-6 bg-zinc-900/50 p-1.5 rounded-full border border-white/5 shadow-inner">
+          <div className="flex items-center gap-6 bg-zinc-900/50 p-1.5 rounded-full border border-white/5 shadow-inner transition-all duration-500 hover:border-white/30 hover:shadow-[0_0_20px_rgba(255,255,255,0.05)]">
           <button 
             onClick={() => setViewMode('cover')}
             className={`px-6 py-2 rounded-full text-[10px] tracking-[0.2em] uppercase transition-all duration-500 ${viewMode === 'cover' ? 'bg-white text-black shadow-lg' : 'text-white/30'}`}
