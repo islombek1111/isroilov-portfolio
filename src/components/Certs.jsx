@@ -101,12 +101,12 @@ function FloatingLogo({ org, isActive, isDimmed, isOpen, onClick }) {
             objectFit: "contain", display: "block",
             // mix-blend-mode:screen makes white/light logo backgrounds invisible on black
             // Works for Google, Microsoft, CFI. IELTS already has transparent-friendly bg.
-            mixBlendMode: "screen",
+            // mixBlendMode: "screen",
             filter: isActive
-              ? "grayscale(1) brightness(1.5) contrast(1.3)"
+              ? "grayscale(1) invert(1) brightness(1.15) contrast(1.3)"
               : hov
-              ? "grayscale(1) brightness(1.1) contrast(1.15)"
-              : "grayscale(1) brightness(0.65) contrast(1.1)",
+              ? "grayscale(1) invert(1) brightness(1.0) contrast(1.15)"
+              : "grayscale(1) invert(1) brightness(0.72) contrast(1.1)",
             transition: "filter 0.5s ease",
           }}
         />
