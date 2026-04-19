@@ -1,6 +1,7 @@
 import { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
+// IELTS sorted lowest → highest so newest/best score is rightmost
 const CERTS = [
   {
     id: "google",
@@ -31,91 +32,62 @@ const CERTS = [
     name: "IELTS",
     logo: "/images/logos/IELTS-logo.png",
     certs: [
-      { img: "/images/certs/IELTS1.jpg", title: "IELTS Academic", score: "7.5" },
-      { img: "/images/certs/IELTS2.jpg", title: "IELTS Academic", score: "6.5" },
       { img: "/images/certs/IELTS3.jpg", title: "IELTS Academic", score: "6.0" },
+      { img: "/images/certs/IELTS2.jpg", title: "IELTS Academic", score: "6.5" },
+      { img: "/images/certs/IELTS1.jpg", title: "IELTS Academic", score: "7.5" },
+      // Add future certs here — layout stays centered automatically
     ],
   },
 ];
 
 const ease = [0.16, 1, 0.3, 1];
 
-// ── Floating logo with shimmer glow + autonomous float ──────
+// ─────────────────────────────────────────────────────────────
+// FloatingLogo — mix-blend-mode:screen removes white backgrounds
+// ─────────────────────────────────────────────────────────────
 function FloatingLogo({ org, isActive, isDimmed, isOpen, onClick }) {
   const [hov, setHov] = useState(false);
   const idx = CERTS.findIndex((c) => c.id === org.id);
-  const floatDuration = 3.8 + idx * 0.55;
-  const floatDelay = idx * 0.65;
-  const shimmerDuration = 3.2 + idx * 0.45;
 
   return (
     <motion.button
       onClick={onClick}
       onMouseEnter={() => setHov(true)}
       onMouseLeave={() => setHov(false)}
-      animate={{
-        opacity: isDimmed ? 0.09 : 1,
-        scale: isActive ? 1.12 : hov ? 1.07 : 1,
-      }}
+      animate={{ opacity: isDimmed ? 0.07 : 1, scale: isActive ? 1.1 : hov ? 1.06 : 1 }}
       transition={{ duration: 0.55, ease }}
       style={{
-        background: "none",
-        border: "none",
-        padding: 0,
-        cursor: "pointer",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        gap: 14,
+        background: "none", border: "none", padding: 0, cursor: "pointer",
+        display: "flex", flexDirection: "column", alignItems: "center", gap: 14,
         position: "relative",
+        WebkitTapHighlightColor: "transparent",
+        touchAction: "manipulation",
       }}
     >
-      {/* Shimmer disc — only when section is resting */}
+      {/* Shimmer glow disc — only resting state */}
       <motion.div
-        animate={
-          !isOpen
-            ? { opacity: [0.0, 0.2, 0.0], scale: [0.7, 1.2, 0.7] }
-            : { opacity: 0, scale: 1 }
+        animate={!isOpen
+          ? { opacity: [0, 0.18, 0], scale: [0.7, 1.25, 0.7] }
+          : { opacity: 0, scale: 1 }
         }
-        transition={{
-          duration: shimmerDuration,
-          repeat: Infinity,
-          ease: "easeInOut",
-          delay: floatDelay,
-        }}
+        transition={{ duration: 3.2 + idx * 0.45, repeat: Infinity, ease: "easeInOut", delay: idx * 0.65 }}
         style={{
-          position: "absolute",
-          top: "38%",
-          left: "50%",
-          transform: "translate(-50%, -50%)",
-          width: 120,
-          height: 120,
-          borderRadius: "50%",
-          background:
-            "radial-gradient(circle, rgba(255,255,255,0.6) 0%, transparent 70%)",
-          pointerEvents: "none",
-          filter: "blur(22px)",
-          zIndex: 0,
+          position: "absolute", top: "38%", left: "50%",
+          transform: "translate(-50%,-50%)",
+          width: 120, height: 120, borderRadius: "50%",
+          background: "radial-gradient(circle, rgba(255,255,255,0.55) 0%, transparent 70%)",
+          pointerEvents: "none", filter: "blur(24px)", zIndex: 0,
         }}
       />
 
-      {/* Floating logo wrapper */}
+      {/* Float animation */}
       <motion.div
         animate={!isOpen ? { y: [0, -8, 0] } : { y: 0 }}
-        transition={{
-          duration: floatDuration,
-          repeat: Infinity,
-          ease: "easeInOut",
-          delay: floatDelay,
-        }}
+        transition={{ duration: 3.8 + idx * 0.55, repeat: Infinity, ease: "easeInOut", delay: idx * 0.65 }}
         style={{
-          width: 88,
-          height: 88,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          position: "relative",
-          zIndex: 1,
+          width: 80, height: 80,
+          display: "flex", alignItems: "center", justifyContent: "center",
+          position: "relative", zIndex: 1,
         }}
       >
         <img
@@ -123,59 +95,49 @@ function FloatingLogo({ org, isActive, isDimmed, isOpen, onClick }) {
           alt={org.name}
           onError={(e) => { e.target.style.opacity = "0"; }}
           style={{
-            maxWidth: "100%",
-            maxHeight: "100%",
-            objectFit: "contain",
-            display: "block",
-            // B&W: grayscale + invert turns any colored logo white-on-black
+            maxWidth: "100%", maxHeight: "100%",
+            objectFit: "contain", display: "block",
+            // mix-blend-mode:screen makes white/light logo backgrounds invisible on black
+            // Works for Google, Microsoft, CFI. IELTS already has transparent-friendly bg.
+            mixBlendMode: "screen",
             filter: isActive
-              ? "grayscale(1) invert(1) brightness(1.15) contrast(1.3)"
+              ? "grayscale(1) brightness(1.5) contrast(1.3)"
               : hov
-              ? "grayscale(1) invert(1) brightness(1.0) contrast(1.15)"
-              : "grayscale(1) invert(1) brightness(0.72) contrast(1.1)",
+              ? "grayscale(1) brightness(1.1) contrast(1.15)"
+              : "grayscale(1) brightness(0.65) contrast(1.1)",
             transition: "filter 0.5s ease",
           }}
         />
       </motion.div>
 
-      {/* Name label */}
-      <span
-        style={{
-          fontFamily: "JetBrains Mono, Courier New, monospace",
-          fontSize: 9,
-          letterSpacing: "0.32em",
-          textTransform: "uppercase",
-          color: isActive
-            ? "rgba(255,255,255,0.75)"
-            : "rgba(255,255,255,0.2)",
-          transition: "color 0.4s ease",
-          position: "relative",
-          zIndex: 1,
-        }}
-      >
+      {/* Name */}
+      <span style={{
+        fontFamily: "JetBrains Mono, Courier New, monospace",
+        fontSize: 9, letterSpacing: "0.32em", textTransform: "uppercase",
+        color: isActive ? "rgba(255,255,255,0.75)" : "rgba(255,255,255,0.2)",
+        transition: "color 0.4s ease", position: "relative", zIndex: 1,
+      }}>
         {org.name}
       </span>
 
-      {/* Active underline */}
+      {/* Active bar */}
       <motion.div
         animate={{ scaleX: isActive ? 1 : 0, opacity: isActive ? 1 : 0 }}
         transition={{ duration: 0.4 }}
         style={{
-          position: "absolute",
-          bottom: -6,
-          left: "50%",
-          translateX: "-50%",
-          width: 22,
-          height: 1,
-          background: "rgba(255,255,255,0.5)",
-          transformOrigin: "center",
+          position: "absolute", bottom: -6, left: "50%",
+          transform: "translateX(-50%)",
+          width: 22, height: 1,
+          background: "rgba(255,255,255,0.5)", transformOrigin: "center",
         }}
       />
     </motion.button>
   );
 }
 
-// ── Horizontal drag-scroll cert strip ──────────────────────
+// ─────────────────────────────────────────────────────────────
+// CertScroller — always centered, drag + touch swipe, mobile OK
+// ─────────────────────────────────────────────────────────────
 function CertScroller({ certs, activeId, hoveredCard, setHoveredCard }) {
   const scrollRef = useRef(null);
   const isDragging = useRef(false);
@@ -204,13 +166,19 @@ function CertScroller({ certs, activeId, hoveredCard, setHoveredCard }) {
   }
   function onTouchMove(e) {
     const diff = touchStartX.current - e.touches[0].clientX;
-    scrollRef.current.scrollLeft += diff * 0.65;
+    scrollRef.current.scrollLeft += diff * 0.7;
     touchStartX.current = e.touches[0].clientX;
   }
 
   return (
     <>
-      <style>{`.cert-scroll::-webkit-scrollbar { display: none; }`}</style>
+      <style>{`
+        .cert-scroll::-webkit-scrollbar { display: none; }
+        @media (max-width: 640px) {
+          .cert-img { height: 190px !important; max-width: 240px !important; }
+        }
+      `}</style>
+
       <div
         ref={scrollRef}
         className="cert-scroll"
@@ -222,19 +190,19 @@ function CertScroller({ certs, activeId, hoveredCard, setHoveredCard }) {
         onTouchMove={onTouchMove}
         style={{
           display: "flex",
-          flexDirection: "row",
-          gap: 20,
+          // FIX 1: always center — when content fits viewport it centers,
+          // when it overflows it becomes scrollable from left with padding
+          justifyContent: "safe center",
+          gap: 16,
           overflowX: "auto",
           overflowY: "visible",
-          cursor: "grab",
+          cursor: certs.length > 1 ? "grab" : "default",
           width: "100%",
-          padding: "16px 48px 8px",
+          padding: "20px 32px 8px",
           scrollbarWidth: "none",
           msOverflowStyle: "none",
           userSelect: "none",
           WebkitOverflowScrolling: "touch",
-          // Centre single cards
-          justifyContent: certs.length === 1 ? "center" : "flex-start",
           boxSizing: "border-box",
         }}
       >
@@ -245,18 +213,20 @@ function CertScroller({ certs, activeId, hoveredCard, setHoveredCard }) {
           return (
             <motion.div
               key={idx}
-              initial={{ opacity: 0, y: 28, scale: 0.96 }}
+              initial={{ opacity: 0, y: 24, scale: 0.96 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              transition={{ duration: 0.55, delay: idx * 0.1, ease }}
+              transition={{ duration: 0.5, delay: idx * 0.09, ease }}
               onMouseEnter={() => setHoveredCard(cardKey)}
               onMouseLeave={() => setHoveredCard(null)}
-              style={{ position: "relative", flexShrink: 0 }}
+              // Mobile: tap to reveal score/title
+              onTouchEnd={() => setHoveredCard(isCardHov ? null : cardKey)}
+              style={{ position: "relative", flexShrink: 0, touchAction: "pan-x" }}
             >
-              {/* idx label */}
+              {/* Index */}
               {certs.length > 1 && (
                 <div style={{
-                  position: "absolute", top: -20, right: 4,
+                  position: "absolute", top: -22, right: 4,
                   fontFamily: "JetBrains Mono, Courier New, monospace",
                   fontSize: 9, letterSpacing: "0.2em",
                   color: "rgba(255,255,255,0.18)", zIndex: 2,
@@ -265,68 +235,65 @@ function CertScroller({ certs, activeId, hoveredCard, setHoveredCard }) {
                 </div>
               )}
 
-              {/* Card shell */}
+              {/* Card */}
               <motion.div
                 animate={{
                   boxShadow: isCardHov
-                    ? "0 0 0 1px rgba(255,255,255,0.22), 0 40px 90px rgba(0,0,0,0.95)"
-                    : "0 0 0 1px rgba(255,255,255,0.07), 0 16px 50px rgba(0,0,0,0.8)",
+                    ? "0 0 0 1px rgba(255,255,255,0.2), 0 36px 80px rgba(0,0,0,0.95)"
+                    : "0 0 0 1px rgba(255,255,255,0.07), 0 14px 44px rgba(0,0,0,0.8)",
                 }}
                 transition={{ duration: 0.5 }}
                 style={{ borderRadius: 8, overflow: "hidden", background: "#080808", position: "relative" }}
               >
-                {/* FIX 5: cert image in full color — no grayscale */}
+                {/* Full-color cert image */}
                 <motion.img
                   src={cert.img}
                   alt={cert.title}
                   loading="lazy"
                   draggable={false}
+                  className="cert-img"
                   animate={{
                     filter: isCardHov && cert.score
-                      ? "brightness(0.18) blur(3px)"
+                      ? "brightness(0.15) blur(3px)"
                       : "brightness(1) saturate(1)",
                     scale: isCardHov ? 1.04 : 1,
                   }}
-                  transition={{ duration: 0.55 }}
+                  transition={{ duration: 0.5 }}
                   style={{
-                    // FIX 4: fit in viewport
-                    height: "clamp(240px, 36vh, 400px)",
+                    height: "clamp(210px, 32vh, 390px)",
                     width: "auto",
-                    maxWidth: "440px",
+                    maxWidth: 340,
                     display: "block",
                     objectFit: "contain",
                     pointerEvents: "none",
                   }}
                 />
 
-                {/* FIX 3: IELTS score in Lexend */}
+                {/* IELTS score */}
                 {cert.score && (
                   <motion.div
                     animate={{ opacity: isCardHov ? 1 : 0 }}
-                    transition={{ duration: 0.38 }}
+                    transition={{ duration: 0.35 }}
                     style={{
                       position: "absolute", inset: 0,
                       display: "flex", flexDirection: "column",
                       alignItems: "center", justifyContent: "center",
-                      pointerEvents: "none", gap: 10,
+                      pointerEvents: "none", gap: 8,
                     }}
                   >
                     <span style={{
                       fontFamily: "'Lexend', sans-serif",
-                      fontSize: "clamp(4rem, 10vw, 7rem)",
-                      fontWeight: 200,
-                      color: "white",
-                      letterSpacing: "-0.01em",
-                      lineHeight: 1,
+                      fontSize: "clamp(3.5rem, 8vw, 6.5rem)",
+                      fontWeight: 200, color: "white",
+                      letterSpacing: "-0.01em", lineHeight: 1,
                     }}>
                       {cert.score}
                     </span>
                     <span style={{
                       fontFamily: "'Lexend', sans-serif",
-                      fontWeight: 300,
-                      fontSize: 10,
+                      fontWeight: 300, fontSize: 10,
                       letterSpacing: "0.32em",
-                      color: "rgba(255,255,255,0.4)",
+                      color: "rgba(255,255,255,0.38)",
                       textTransform: "uppercase",
                     }}>
                       Overall Band
@@ -334,22 +301,22 @@ function CertScroller({ certs, activeId, hoveredCard, setHoveredCard }) {
                   </motion.div>
                 )}
 
-                {/* Title strip slides up on hover */}
+                {/* Title strip */}
                 <motion.div
                   animate={{ y: isCardHov ? 0 : "110%" }}
-                  transition={{ duration: 0.42, ease }}
+                  transition={{ duration: 0.4, ease }}
                   style={{
                     position: "absolute", bottom: 0, left: 0, right: 0,
-                    padding: "15px 18px",
-                    background: "rgba(0,0,0,0.84)",
+                    padding: "14px 16px",
+                    background: "rgba(0,0,0,0.85)",
                     backdropFilter: "blur(14px)",
                     borderTop: "1px solid rgba(255,255,255,0.07)",
                   }}
                 >
                   <p style={{
                     fontFamily: "JetBrains Mono, Courier New, monospace",
-                    fontSize: 9, letterSpacing: "0.26em",
-                    color: "rgba(255,255,255,0.62)",
+                    fontSize: 9, letterSpacing: "0.24em",
+                    color: "rgba(255,255,255,0.6)",
                     textTransform: "uppercase",
                     textAlign: "center", margin: 0,
                   }}>
@@ -362,19 +329,16 @@ function CertScroller({ certs, activeId, hoveredCard, setHoveredCard }) {
         })}
       </div>
 
-      {/* FIX 7: drag hint, no arrows */}
       {certs.length > 1 && (
         <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.7 }}
+          initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+          transition={{ delay: 0.65 }}
           style={{
             textAlign: "center",
             fontFamily: "JetBrains Mono, Courier New, monospace",
             fontSize: 8, letterSpacing: "0.3em",
             color: "rgba(255,255,255,0.1)",
-            textTransform: "uppercase",
-            marginTop: 12,
+            textTransform: "uppercase", marginTop: 10,
           }}
         >
           drag to explore
@@ -384,12 +348,13 @@ function CertScroller({ certs, activeId, hoveredCard, setHoveredCard }) {
   );
 }
 
-// ── Root component ──────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────
+// Root
+// ─────────────────────────────────────────────────────────────
 export default function Certs() {
   const [active, setActive] = useState(null);
   const [hoveredCard, setHoveredCard] = useState(null);
   const sectionRef = useRef(null);
-
   const activeCert = CERTS.find((c) => c.id === active);
   const isOpen = active !== null;
 
@@ -397,7 +362,6 @@ export default function Certs() {
     const opening = active !== id;
     setActive(opening ? id : null);
     setHoveredCard(null);
-    // FIX 4: scroll section top into view when opening
     if (opening) {
       setTimeout(() => {
         sectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -415,16 +379,16 @@ export default function Certs() {
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
-        // FIX 4: start near top, not dead-center, so certs are visible
         justifyContent: isOpen ? "flex-start" : "center",
         overflow: "hidden",
-        padding: isOpen ? "72px 0 40px" : "0 0 0",
+        padding: isOpen ? "clamp(52px,8vh,84px) 0 40px" : "0",
         transition: "padding 0.8s cubic-bezier(0.16,1,0.3,1)",
         boxSizing: "border-box",
         position: "relative",
+        touchAction: "pan-y",
       }}
     >
-      {/* Ambient glow */}
+      {/* Glow */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
@@ -438,13 +402,13 @@ export default function Certs() {
         )}
       </AnimatePresence>
 
-      {/* FIX 1: no "Certs" heading — only eyebrow label */}
+      {/* Eyebrow */}
       <motion.div
         animate={{ opacity: isOpen ? 0 : 1, y: isOpen ? -10 : 0 }}
         transition={{ duration: 0.55, ease }}
         style={{
           display: "flex", alignItems: "center", gap: 12,
-          marginBottom: 60, zIndex: 10, position: "relative",
+          marginBottom: 56, zIndex: 10, position: "relative",
           pointerEvents: isOpen ? "none" : "auto",
         }}
       >
@@ -459,20 +423,19 @@ export default function Certs() {
         <div style={{ width: 28, height: 1, background: "rgba(255,255,255,0.15)" }} />
       </motion.div>
 
-      {/* ── FIX 2: Bigger logos (88px) with float + shimmer ── */}
+      {/* Logo row */}
       <motion.div
-        animate={{ scale: isOpen ? 0.7 : 1, y: isOpen ? 0 : 0 }}
+        animate={{ scale: isOpen ? 0.68 : 1 }}
         transition={{ duration: 0.85, ease }}
         style={{
-          display: "flex", flexWrap: "wrap",
-          justifyContent: "center", gap: 56,
-          zIndex: 20, position: "relative", padding: "0 24px",
+          display: "flex", flexWrap: "wrap", justifyContent: "center",
+          gap: "clamp(24px, 5vw, 56px)",
+          zIndex: 20, position: "relative", padding: "0 16px", width: "100%",
         }}
       >
         {CERTS.map((org) => (
           <FloatingLogo
-            key={org.id}
-            org={org}
+            key={org.id} org={org}
             isActive={active === org.id}
             isDimmed={isOpen && active !== org.id}
             isOpen={isOpen}
@@ -481,19 +444,16 @@ export default function Certs() {
         ))}
       </motion.div>
 
-      {/* ── Cert cards ── */}
+      {/* Cards */}
       <AnimatePresence mode="wait">
         {isOpen && activeCert && (
           <motion.div
             key={active}
-            initial={{ opacity: 0, y: 50, scale: 0.95 }}
+            initial={{ opacity: 0, y: 44, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 24, scale: 0.97 }}
-            transition={{ duration: 0.75, ease }}
-            style={{
-              width: "100%", marginTop: 44,
-              position: "relative", zIndex: 10,
-            }}
+            exit={{ opacity: 0, y: 20, scale: 0.97 }}
+            transition={{ duration: 0.72, ease }}
+            style={{ width: "100%", marginTop: 40, position: "relative", zIndex: 10 }}
           >
             <CertScroller
               certs={activeCert.certs}
@@ -505,30 +465,27 @@ export default function Certs() {
         )}
       </AnimatePresence>
 
-      {/* FIX 6: Premium "Close Archive" pill button / idle hint */}
+      {/* Close / hint */}
       <AnimatePresence>
         {isOpen ? (
           <motion.button
             key="close"
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 6 }}
-            transition={{ duration: 0.5, delay: 0.35 }}
+            transition={{ duration: 0.5, delay: 0.32 }}
             onClick={() => setActive(null)}
             style={{
-              marginTop: 32,
+              marginTop: 28,
               display: "inline-flex", alignItems: "center", gap: 8,
               padding: "10px 26px",
               border: "1px solid rgba(255,255,255,0.15)",
-              borderRadius: 9999,
-              background: "transparent",
-              cursor: "pointer",
+              borderRadius: 9999, background: "transparent", cursor: "pointer",
               fontFamily: "JetBrains Mono, Courier New, monospace",
               fontSize: 10, letterSpacing: "0.22em",
-              color: "rgba(255,255,255,0.42)",
-              textTransform: "uppercase",
+              color: "rgba(255,255,255,0.42)", textTransform: "uppercase",
               position: "relative", zIndex: 20,
               transition: "border-color 0.3s ease, color 0.3s ease, background 0.3s ease",
+              WebkitTapHighlightColor: "transparent", touchAction: "manipulation",
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.borderColor = "rgba(255,255,255,0.38)";
@@ -554,11 +511,10 @@ export default function Certs() {
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
             transition={{ duration: 0.6, delay: 0.3 }}
             style={{
-              marginTop: 56,
+              marginTop: 52,
               fontFamily: "JetBrains Mono, Courier New, monospace",
               fontSize: 9, letterSpacing: "0.32em",
-              color: "rgba(255,255,255,0.1)",
-              textTransform: "uppercase",
+              color: "rgba(255,255,255,0.1)", textTransform: "uppercase",
             }}
           >
             Select an organisation
