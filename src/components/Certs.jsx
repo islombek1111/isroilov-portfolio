@@ -238,19 +238,14 @@ function CertScroller({ certs, activeId, hoveredCard, setHoveredCard }) {
               )}
 
               {/* Card */}
-<motion.div
+              <motion.div
                 animate={{
                   boxShadow: isCardHov
                     ? "0 0 0 1px rgba(255,255,255,0.2), 0 36px 80px rgba(0,0,0,0.95)"
                     : "0 0 0 1px rgba(255,255,255,0.07), 0 14px 44px rgba(0,0,0,0.8)",
                 }}
                 transition={{ duration: 0.5 }}
-                style={{ 
-                  borderRadius: 8, overflow: "hidden", background: "#080808", position: "relative",
-                  cursor: isZoomEnabled ? 'crosshair' : 'default'
-                }}
-                onMouseMove={isZoomEnabled ? handleMouseMove : null}
-                onMouseLeave={() => setZoomPos({ ...zoomPos, show: false })}
+                style={{ borderRadius: 8, overflow: "hidden", background: "#080808", position: "relative" }}
               >
                 {/* Full-color cert image */}
                 <motion.img
@@ -260,10 +255,10 @@ function CertScroller({ certs, activeId, hoveredCard, setHoveredCard }) {
                   draggable={false}
                   className="cert-img"
                   animate={{
-                    filter: (!isZoomEnabled && isCardHov && cert.score)
+                    filter: isCardHov && cert.score
                       ? "brightness(0.15) blur(3px)"
                       : "brightness(1) saturate(1)",
-                    scale: (!isZoomEnabled && isCardHov) ? 1.04 : 1,
+                    scale: isCardHov ? 1.04 : 1,
                   }}
                   transition={{ duration: 0.5 }}
                   style={{
@@ -275,78 +270,6 @@ function CertScroller({ certs, activeId, hoveredCard, setHoveredCard }) {
                     pointerEvents: "none",
                   }}
                 />
-
-                {/* MAGNIFIER LAYER */}
-                {isZoomEnabled && zoomPos.show && (
-                  <div 
-                    style={{
-                      position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 50,
-                      backgroundImage: `url(${cert.img})`,
-                      backgroundPosition: `${zoomPos.x}% ${zoomPos.y}%`,
-                      backgroundSize: "280%", 
-                      backgroundRepeat: "no-repeat"
-                    }}
-                  />
-                )}
-
-                {/* OVERLAYS: Only show if Zoom is OFF */}
-                {!isZoomEnabled && (
-                  <>
-                    {cert.score && (
-                      <motion.div
-                        animate={{ opacity: isCardHov ? 1 : 0 }}
-                        transition={{ duration: 0.35 }}
-                        style={{
-                          position: "absolute", inset: 0,
-                          display: "flex", flexDirection: "column",
-                          alignItems: "center", justifyContent: "center",
-                          pointerEvents: "none", gap: 8,
-                        }}
-                      >
-                        <span style={{
-                          fontFamily: "'Lexend', sans-serif",
-                          fontSize: "clamp(3.5rem, 8vw, 6.5rem)",
-                          fontWeight: 200, color: "white",
-                          letterSpacing: "-0.01em", lineHeight: 1,
-                        }}>
-                          {cert.score}
-                        </span>
-                        <span style={{
-                          fontFamily: "'Lexend', sans-serif",
-                          fontWeight: 300, fontSize: 10,
-                          letterSpacing: "0.32em", color: "rgba(255,255,255,0.38)",
-                          textTransform: "uppercase",
-                        }}>
-                          Overall Band
-                        </span>
-                      </motion.div>
-                    )}
-
-                    {/* Title strip */}
-                    <motion.div
-                      animate={{ y: isCardHov ? 0 : "110%" }}
-                      transition={{ duration: 0.4, ease }}
-                      style={{
-                        position: "absolute", bottom: 0, left: 0, right: 0,
-                        padding: "14px 16px",
-                        background: "rgba(0,0,0,0.85)",
-                        backdropFilter: "blur(14px)",
-                        borderTop: "1px solid rgba(255,255,255,0.07)",
-                      }}
-                    >
-                      <p style={{
-                        fontFamily: "JetBrains Mono, Courier New, monospace",
-                        fontSize: 9, letterSpacing: "0.24em",
-                        color: "rgba(255,255,255,0.6)",
-                        textTransform: "uppercase",
-                        textAlign: "center", margin: 0,
-                      }}>
-                        {cert.title}
-                      </p>
-                    </motion.div>
-                  </>
-                )}
-              </motion.div>
 
                 {/* IELTS score */}
                 {cert.score && (
@@ -532,7 +455,7 @@ export default function Certs() {
         ))}
       </motion.div>
 
-{/* ZOOM SWITCHER */}
+  {/* ZOOM SWITCHER */}
       <AnimatePresence>
         {isOpen && (
           <motion.div 
@@ -575,12 +498,77 @@ export default function Certs() {
             style={{ width: "100%", marginTop: 40, position: "relative", zIndex: 10 }}
           >
             <CertScroller
-              certs={activeCert.certs}
-              activeId={active}
-              hoveredCard={hoveredCard}
-              setHoveredCard={setHoveredCard}
-            />
-          </motion.div>
+              <motion.div
+                animate={{
+                  boxShadow: isCardHov
+                    ? "0 0 0 1px rgba(255,255,255,0.2), 0 36px 80px rgba(0,0,0,0.95)"
+                    : "0 0 0 1px rgba(255,255,255,0.07), 0 14px 44px rgba(0,0,0,0.8)",
+                }}
+                transition={{ duration: 0.5 }}
+                style={{ 
+                  borderRadius: 8, overflow: "hidden", background: "#080808", position: "relative",
+                  cursor: isZoomEnabled ? 'crosshair' : 'default'
+                }}
+                onMouseMove={isZoomEnabled ? handleMouseMove : null}
+                onMouseLeave={() => setZoomPos({ ...zoomPos, show: false })}
+              >
+                <motion.img
+                  src={cert.img}
+                  alt={cert.title}
+                  className="cert-img"
+                  animate={{
+                    filter: (!isZoomEnabled && isCardHov && cert.score) ? "brightness(0.15) blur(3px)" : "brightness(1)",
+                    scale: (!isZoomEnabled && isCardHov) ? 1.04 : 1,
+                  }}
+                  transition={{ duration: 0.5 }}
+                  style={{
+                    height: "clamp(210px, 32vh, 390px)", width: "auto", maxWidth: 340,
+                    display: "block", objectFit: "contain", pointerEvents: "none",
+                  }}
+                />
+
+                {/* MAGNIFIER LAYER */}
+                {isZoomEnabled && zoomPos.show && (
+                  <div 
+                    style={{
+                      position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 50,
+                      backgroundImage: `url(${cert.img})`,
+                      backgroundPosition: `${zoomPos.x}% ${zoomPos.y}%`,
+                      backgroundSize: "280%", backgroundRepeat: "no-repeat"
+                    }}
+                  />
+                )}
+
+                {/* OVERLAYS: Only show if Zoom is OFF */}
+                {!isZoomEnabled && (
+                  <>
+                    {cert.score && (
+                      <motion.div
+                        animate={{ opacity: isCardHov ? 1 : 0 }}
+                        style={{
+                          position: "absolute", inset: 0, display: "flex", flexDirection: "column",
+                          alignItems: "center", justifyContent: "center", pointerEvents: "none",
+                        }}
+                      >
+                        <span style={{ fontFamily: "'Lexend', sans-serif", fontSize: "6rem", fontWeight: 200, color: "white" }}>
+                          {cert.score}
+                        </span>
+                      </motion.div>
+                    )}
+                    <motion.div
+                      animate={{ y: isCardHov ? 0 : "110%" }}
+                      style={{
+                        position: "absolute", bottom: 0, left: 0, right: 0, padding: "14px",
+                        background: "rgba(0,0,0,0.85)", backdropFilter: "blur(14px)",
+                      }}
+                    >
+                      <p style={{ fontSize: 9, letterSpacing: "0.24em", color: "rgba(255,255,255,0.6)", textAlign: "center" }}>
+                        {cert.title}
+                      </p>
+                    </motion.div>
+                  </>
+                )}
+              </motion.div>
         )}
       </AnimatePresence>
 
