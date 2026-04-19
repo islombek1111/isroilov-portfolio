@@ -356,15 +356,6 @@ function CertScroller({ certs, activeId, hoveredCard, setHoveredCard }) {
 export default function Certs() {
   const [active, setActive] = useState(null);
   const [hoveredCard, setHoveredCard] = useState(null);
-  const [isZoomEnabled, setIsZoomEnabled] = useState(false);
-  const [zoomPos, setZoomPos] = useState({ x: 0, y: 0, show: false });
-
-  const handleMouseMove = (e) => {
-    const { left, top, width, height } = e.currentTarget.getBoundingClientRect();
-    const x = ((e.pageX - left - window.scrollX) / width) * 100;
-    const y = ((e.pageY - top - window.scrollY) / height) * 100;
-    setZoomPos({ x, y, show: true });
-  };
   const sectionRef = useRef(null);
   const activeCert = CERTS.find((c) => c.id === active);
   const isOpen = active !== null;
@@ -455,111 +446,24 @@ export default function Certs() {
         ))}
       </motion.div>
 
-  {/* ZOOM SWITCHER */}
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div 
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0 }}
-            style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '20px', zIndex: 30 }}
-          >
-            <div 
-              onClick={() => setIsZoomEnabled(!isZoomEnabled)}
-              style={{
-                display: 'flex', alignItems: 'center', gap: '12px', padding: '10px 24px', borderRadius: '99px',
-                border: '1px solid', borderColor: isZoomEnabled ? "rgba(255,255,255,0.4)" : "rgba(255,255,255,0.1)",
-                background: isZoomEnabled ? "rgba(255,255,255,0.05)" : "transparent",
-                cursor: 'pointer', transition: 'all 0.5s ease', position: 'relative'
-              }}
-            >
-              <div style={{ 
-                width: 8, height: 8, borderRadius: '50%', transition: 'all 0.5s', 
-                background: isZoomEnabled ? '#fff' : 'rgba(255,255,255,0.2)',
-                boxShadow: isZoomEnabled ? '0 0 8px #fff' : 'none' 
-              }} />
-              <span style={{ fontFamily: 'Lexend, sans-serif', fontSize: '10px', letterSpacing: '0.3em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.7)' }}>
-                Precision Zoom
-              </span>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
       {/* Cards */}
       <AnimatePresence mode="wait">
         {isOpen && activeCert && (
-              <motion.div
-                animate={{
-                  boxShadow: isCardHov
-                    ? "0 0 0 1px rgba(255,255,255,0.2), 0 36px 80px rgba(0,0,0,0.95)"
-                    : "0 0 0 1px rgba(255,255,255,0.07), 0 14px 44px rgba(0,0,0,0.8)",
-                )}
-                transition={{ duration: 0.5 }}
-                style={{ 
-                  borderRadius: 8, overflow: "hidden", background: "#080808", position: "relative",
-                  cursor: isZoomEnabled ? 'crosshair' : 'default'
-                }}
-                onMouseMove={isZoomEnabled ? handleMouseMove : null}
-                onMouseLeave={() => setZoomPos({ ...zoomPos, show: false })}
-              >
-                <motion.img
-                  src={cert.img}
-                  alt={cert.title}
-                  className="cert-img"
-                  animate={{
-                    filter: (!isZoomEnabled && isCardHov && cert.score) ? "brightness(0.15) blur(3px)" : "brightness(1)",
-                    scale: (!isZoomEnabled && isCardHov) ? 1.04 : 1,
-                  }}
-                  transition={{ duration: 0.5 }}
-                  style={{
-                    height: "clamp(210px, 32vh, 390px)", width: "auto", maxWidth: 340,
-                    display: "block", objectFit: "contain", pointerEvents: "none",
-                  }}
-                />
-
-                {/* MAGNIFIER LAYER */}
-                {isZoomEnabled && zoomPos.show && (
-                  <div 
-                    style={{
-                      position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 50,
-                      backgroundImage: `url(${cert.img})`,
-                      backgroundPosition: `${zoomPos.x}% ${zoomPos.y}%`,
-                      backgroundSize: "280%", backgroundRepeat: "no-repeat"
-                    }}
-                  />
-                )}
-
-                {/* OVERLAYS: Only show if Zoom is OFF */}
-                {!isZoomEnabled && (
-                  <>
-                    {cert.score && (
-                      <motion.div
-                        animate={{ opacity: isCardHov ? 1 : 0 }}
-                        style={{
-                          position: "absolute", inset: 0, display: "flex", flexDirection: "column",
-                          alignItems: "center", justifyContent: "center", pointerEvents: "none",
-                        }}
-                      >
-                        <span style={{ fontFamily: "'Lexend', sans-serif", fontSize: "6rem", fontWeight: 200, color: "white" }}>
-                          {cert.score}
-                        </span>
-                      </motion.div>
-                    )}
-                    <motion.div
-                      animate={{ y: isCardHov ? 0 : "110%" }}
-                      style={{
-                        position: "absolute", bottom: 0, left: 0, right: 0, padding: "14px",
-                        background: "rgba(0,0,0,0.85)", backdropFilter: "blur(14px)",
-                      }}
-                    >
-                      <p style={{ fontSize: 9, letterSpacing: "0.24em", color: "rgba(255,255,255,0.6)", textAlign: "center" }}>
-                        {cert.title}
-                      </p>
-                    </motion.div>
-                  </>
-                )}
-              </motion.div>
+          <motion.div
+            key={active}
+            initial={{ opacity: 0, y: 44, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 20, scale: 0.97 }}
+            transition={{ duration: 0.72, ease }}
+            style={{ width: "100%", marginTop: 40, position: "relative", zIndex: 10 }}
+          >
+            <CertScroller
+              certs={activeCert.certs}
+              activeId={active}
+              hoveredCard={hoveredCard}
+              setHoveredCard={setHoveredCard}
+            />
+          </motion.div>
         )}
       </AnimatePresence>
 
