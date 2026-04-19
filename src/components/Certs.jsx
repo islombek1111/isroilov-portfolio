@@ -90,27 +90,26 @@ function FloatingLogo({ org, isActive, isDimmed, isOpen, onClick }) {
           position: "relative", zIndex: 1,
         }}
       >
-<img 
-  src={org.logo} 
-  alt={org.name}
-  style={{
-    width: "100%",
-    height: "100%",
-    objectFit: "contain",
-    // This line forces specific logos to scale up if they look too small
-    transform: org.id === 'cfi' ? 'scale(1.4)' : 'scale(1)', 
-    filter: selectedOrg && selectedOrg !== org.id ? "grayscale(1) opacity(0.2)" : "grayscale(1) brightness(2)",
-    transition: "transform 0.3s ease, filter 0.5s ease",
-  }}
-  onMouseEnter={(e) => {
-    e.currentTarget.style.filter = "grayscale(0) brightness(1)";
-    e.currentTarget.style.transform = org.id === 'cfi' ? 'scale(1.5)' : 'scale(1.1)';
-  }}
-  onMouseLeave={(e) => {
-    e.currentTarget.style.filter = selectedOrg && selectedOrg !== org.id ? "grayscale(1) opacity(0.2)" : "grayscale(1) brightness(2)";
-    e.currentTarget.style.transform = org.id === 'cfi' ? 'scale(1.4)' : 'scale(1)';
-  }}
-/>
+
+
+        <img
+          src={org.logo}
+          alt={org.name}
+          onError={(e) => { e.target.style.opacity = "0"; }}
+          style={{
+            maxWidth: "100%", maxHeight: "100%",
+            objectFit: "contain", display: "block",
+            // mix-blend-mode:screen makes white/light logo backgrounds invisible on black
+            // Works for Google, Microsoft, CFI. IELTS already has transparent-friendly bg.
+            mixBlendMode: "screen",
+            filter: isActive
+              ? "grayscale(1) brightness(1.5) contrast(1.3)"
+              : hov
+              ? "grayscale(1) brightness(1.1) contrast(1.15)"
+              : "grayscale(1) brightness(0.65) contrast(1.1)",
+            transition: "filter 0.5s ease",
+          }}
+        />
       </motion.div>
 
       {/* Name */}
