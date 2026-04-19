@@ -489,21 +489,12 @@ export default function Certs() {
       {/* Cards */}
       <AnimatePresence mode="wait">
         {isOpen && activeCert && (
-          <motion.div
-            key={active}
-            initial={{ opacity: 0, y: 44, scale: 0.95 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 20, scale: 0.97 }}
-            transition={{ duration: 0.72, ease }}
-            style={{ width: "100%", marginTop: 40, position: "relative", zIndex: 10 }}
-          >
-            <CertScroller
               <motion.div
                 animate={{
                   boxShadow: isCardHov
                     ? "0 0 0 1px rgba(255,255,255,0.2), 0 36px 80px rgba(0,0,0,0.95)"
                     : "0 0 0 1px rgba(255,255,255,0.07), 0 14px 44px rgba(0,0,0,0.8)",
-                }}
+                )}
                 transition={{ duration: 0.5 }}
                 style={{ 
                   borderRadius: 8, overflow: "hidden", background: "#080808", position: "relative",
