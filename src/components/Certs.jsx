@@ -179,7 +179,7 @@ function FloatingLogo({ org, isActive, isDimmed, isOpen, onClick }) {
   const idx = CERTS.findIndex(c => c.id === org.id);
   return (
     <motion.button onClick={onClick} onMouseEnter={() => setHov(true)} onMouseLeave={() => setHov(false)}
-      animate={{ opacity: isDimmed ? 0.07 : 1, scale: isActive ? 1.1 : hov ? 1.06 : 1 }}
+      animate={{ opacity: isDimmed ? 0.22 : 1, scale: isActive ? 1.1 : hov ? 1.06 : 1 }}
       transition={{ duration: 0.55, ease }}
       style={{ background: "none", border: "none", padding: 0, cursor: "pointer", display: "flex", flexDirection: "column", alignItems: "center", gap: 14, position: "relative", WebkitTapHighlightColor: "transparent", touchAction: "manipulation" }}>
       <motion.div animate={!isOpen ? { opacity: [0, 0.18, 0], scale: [0.7, 1.25, 0.7] } : { opacity: 0, scale: 1 }}
@@ -189,7 +189,7 @@ function FloatingLogo({ org, isActive, isDimmed, isOpen, onClick }) {
         transition={{ duration: 3.8 + idx * 0.55, repeat: Infinity, ease: "easeInOut", delay: idx * 0.65 }}
         style={{ width: 80, height: 80, display: "flex", alignItems: "center", justifyContent: "center", position: "relative", zIndex: 1 }}>
         <img src={org.logo} alt={org.name} onError={e => { e.target.style.opacity = "0"; }}
-          style={{ maxWidth: "100%", maxHeight: "100%", objectFit: "contain", display: "block", filter: isActive ? "grayscale(1) invert(1) brightness(1.15) contrast(1.3)" : hov ? "grayscale(1) invert(1) brightness(1.0) contrast(1.15)" : "grayscale(1) invert(1) brightness(0.72) contrast(1.1)", transition: "filter 0.5s ease" }} />
+          style={{ maxWidth: "100%", maxHeight: "100%", objectFit: "contain", display: "block", filter: isActive ? "grayscale(1) invert(1) brightness(1.15) contrast(1.3)" : hov ? "grayscale(1) invert(1) brightness(1.0) contrast(1.15)" : "grayscale(1) invert(1) brightness(0.85) contrast(1.1)", transition: "filter 0.5s ease" }} />
       </motion.div>
       <span style={{ fontFamily: "JetBrains Mono, Courier New, monospace", fontSize: 9, letterSpacing: "0.32em", textTransform: "uppercase", color: isActive ? "rgba(255,255,255,0.75)" : "rgba(255,255,255,0.2)", transition: "color 0.4s ease", position: "relative", zIndex: 1 }}>{org.name}</span>
       <motion.div animate={{ scaleX: isActive ? 1 : 0, opacity: isActive ? 1 : 0 }} transition={{ duration: 0.4 }}
