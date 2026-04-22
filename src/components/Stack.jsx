@@ -183,7 +183,7 @@ export default function Stack() {
         lineHeight: 1.65,
         marginBottom: 64,
       }}>
-        The tools I use to build things, plus ones I'm learning to build more.
+        The tools I use to build, plus ones I'm learning to build more.
       </p>
 
       {/* Logo grid */}

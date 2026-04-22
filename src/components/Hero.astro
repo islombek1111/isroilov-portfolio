@@ -2,60 +2,91 @@
 // Hero.astro
 ---
 
+<!-- Preload Playfair Display from Google Fonts for the name -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600&display=swap" rel="stylesheet" />
+
 <section id="home" class="relative min-h-screen flex flex-col justify-end pb-16 md:pb-24 px-6 md:px-12 overflow-hidden">
 
   <!-- Background photo -->
   <div class="absolute inset-0 z-0">
-    <img src="/images/hero.jpg" alt="Islombek Isroilov"
+    <img
+      src="/images/hero.jpg"
+      alt="Islombek Isroilov"
       class="w-full h-full object-cover object-top opacity-60"
-      style="filter: grayscale(100%) contrast(1.05);" />
+      style="filter: grayscale(100%) contrast(1.05);"
+    />
     <div class="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent"></div>
     <div class="absolute inset-0 bg-gradient-to-r from-black/55 via-transparent to-transparent"></div>
   </div>
 
   <!-- Vertical decorative line -->
   <div class="absolute left-6 md:left-12 top-0 bottom-0 w-px z-10 overflow-hidden" aria-hidden="true">
-    <div style="animation: lineGrow 2s 0.5s cubic-bezier(0.16,1,0.3,1) forwards; height:0%; width:100%; background: linear-gradient(to bottom, transparent, rgba(255,255,255,0.18), transparent);"></div>
+    <div class="vert-line"></div>
   </div>
 
   <!-- Content -->
   <div class="relative z-10 max-w-7xl mx-auto w-full">
 
     <!-- Eyebrow -->
-    <div class="flex items-center gap-4 mb-6" style="opacity:0; animation: fadeUp 1s 0.3s cubic-bezier(0.16,1,0.3,1) forwards;">
+    <div class="flex items-center gap-4 mb-6 anim-fade-up" style="--delay:0.3s">
       <span class="w-8 h-px bg-white/35"></span>
       <span class="font-mono text-[10px] tracking-[0.35em] uppercase text-white/35">Islombek Isroilov</span>
     </div>
 
-    <!-- ISROILOV — Lexend, per-letter animated -->
-    <div class="overflow-visible mb-10" id="hero-name-wrap">
-      <h1 id="hero-name"
-        style="font-family:'Lexend',sans-serif; font-weight:300; line-height:0.9; letter-spacing:0.1em; color:white; font-size:clamp(3.5rem,12vw,10rem); display:flex; gap:0.01em; flex-wrap:nowrap; cursor:default; user-select:none;">
-        <!-- Letters injected by JS below -->
+    <!-- ── ISROILOV — Playfair Display, built letter by letter in JS ── -->
+    <div class="overflow-visible mb-10">
+      <h1
+        id="hero-name"
+        aria-label="ISROILOV"
+        style="
+          font-family: 'Playfair Display', Georgia, serif;
+          font-weight: 500;
+          line-height: 0.88;
+          letter-spacing: 0.06em;
+          color: white;
+          font-size: clamp(4rem, 13vw, 11rem);
+          display: flex;
+          align-items: baseline;
+          flex-wrap: nowrap;
+          user-select: none;
+          cursor: default;
+        "
+      >
+        <!-- Letters injected by script below -->
       </h1>
     </div>
 
     <!-- Warning box -->
-    <div class="warning-box" style="opacity:0; animation: fadeUp 1s 1.6s cubic-bezier(0.16,1,0.3,1) forwards; max-width: 540px;">
+    <div
+      class="warning-box anim-fade-up"
+      style="--delay:1.8s; max-width: 540px;"
+    >
       <div class="warning-accent-bar"></div>
       <div class="warning-content">
         <p class="warning-headline">No portfolio fluff here.</p>
         <p class="warning-body">
           This is just a space where I add, change, or nuke stuff whenever I feel like it.
-          <span class="warning-domain">[isroilov.com]</span> is not a reflection of who I am or what I do.
+          <!-- FIX: [isroilov.com] is now a real link, styled to stand out -->
+          <a href="https://isroilov.com" class="warning-domain-link">[isroilov.com]</a>
+          is not a reflection of who I am or what I do.
         </p>
       </div>
     </div>
 
     <!-- Divider -->
     <div class="h-px w-full bg-white/5 mt-10 mb-10 overflow-hidden">
-      <div style="height:100%; width:0%; background: linear-gradient(to right, rgba(255,255,255,0.28), rgba(255,255,255,0.08), transparent); animation: lineExpand 1.5s 1.8s cubic-bezier(0.16,1,0.3,1) forwards;"></div>
+      <div class="divider-line" style="--delay:2.0s"></div>
     </div>
 
     <!-- CTAs -->
-    <div class="flex items-center gap-5" style="opacity:0; animation: fadeUp 1s 1.9s cubic-bezier(0.16,1,0.3,1) forwards;">
-      <a href="#pics" data-hover class="btn-glow px-7 py-3 text-xs tracking-[0.25em] uppercase font-body rounded-full">See My Stuff</a>
-      <a href="#contact" data-hover class="btn-glow hidden md:inline-flex items-center gap-2 px-5 py-2.5 text-xs tracking-[0.2em] uppercase font-body rounded-full">
+    <div class="flex items-center gap-5 anim-fade-up" style="--delay:2.1s">
+      <a href="#pics" data-hover class="btn-glow px-7 py-3 text-xs tracking-[0.25em] uppercase font-body rounded-full">
+        See My Stuff
+      </a>
+      <a href="#contact" data-hover
+        class="btn-glow hidden md:inline-flex items-center gap-2 px-5 py-2.5 text-xs tracking-[0.2em] uppercase font-body rounded-full">
         <span class="w-1.5 h-1.5 rounded-full bg-white/60 animate-pulse"></span>
         Say Hello
       </a>
@@ -63,113 +94,225 @@
   </div>
 
   <!-- Scroll indicator -->
-  <div class="absolute bottom-8 right-6 md:right-12 z-10 flex flex-col items-center gap-3"
-    style="opacity:0; animation: fadeUp 1s 2.1s cubic-bezier(0.16,1,0.3,1) forwards;">
+  <div class="absolute bottom-8 right-6 md:right-12 z-10 flex flex-col items-center gap-3 anim-fade-up" style="--delay:2.3s">
     <span class="font-mono text-[9px] tracking-[0.3em] uppercase text-white/22" style="writing-mode:vertical-lr;">Scroll</span>
     <div class="w-px h-12 overflow-hidden" style="background: linear-gradient(to bottom, rgba(255,255,255,0.18), transparent);">
-      <div style="width:100%; height:30%; background:rgba(255,255,255,0.6); animation: scrollLine 2s 2.2s ease-in-out infinite; top:-30%; position:relative;"></div>
+      <div class="scroll-line"></div>
     </div>
   </div>
 </section>
 
 <style>
-  @keyframes lineGrow    { to { height: 100%; } }
-  @keyframes fadeUp      { from { opacity:0; transform:translateY(24px); } to { opacity:1; transform:translateY(0); } }
-  @keyframes lineExpand  { to { width: 100%; } }
-  @keyframes scrollLine  { 0% { top:-30%; } 100% { top:130%; } }
-  @keyframes barPulse    { 0%,100% { opacity:.35; } 50% { opacity:.65; } }
+  /* ── Fonts needed only for the name ─────────────────────── */
+  /* Playfair Display loaded via <link> above for speed */
 
-  /* Per-letter entrance animation */
-  @keyframes letterReveal {
-    0%   { opacity: 0; transform: translateY(40px) scaleY(0.6); filter: blur(8px); }
-    60%  { filter: blur(0px); }
-    100% { opacity: 1; transform: translateY(0) scaleY(1); filter: blur(0px); }
+  /* ── Utility animations ──────────────────────────────────── */
+  @keyframes lineGrow   { to { height: 100%; } }
+  @keyframes lineExpand { to { width: 100%; } }
+  @keyframes barPulse   { 0%,100%{opacity:.35} 50%{opacity:.68} }
+  @keyframes scrollAnim { 0%{top:-30%} 100%{top:130%} }
+
+  @keyframes fadeUp {
+    from { opacity:0; transform:translateY(22px); }
+    to   { opacity:1; transform:translateY(0); }
   }
 
-  /* Hover wave — single letter lifts + brightens */
-  @keyframes letterWave {
-    0%   { transform: translateY(0); }
-    30%  { transform: translateY(-14px); color: rgba(255,255,255,1); }
-    70%  { transform: translateY(-6px); }
-    100% { transform: translateY(0); }
+  .anim-fade-up {
+    opacity: 0;
+    animation: fadeUp 1s var(--delay, 0s) cubic-bezier(0.16,1,0.3,1) forwards;
+  }
+
+  .vert-line {
+    height: 0%;
+    width: 100%;
+    background: linear-gradient(to bottom, transparent, rgba(255,255,255,0.18), transparent);
+    animation: lineGrow 2s 0.5s cubic-bezier(0.16,1,0.3,1) forwards;
+  }
+
+  .divider-line {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(to right, rgba(255,255,255,0.28), rgba(255,255,255,0.08), transparent);
+    animation: lineExpand 1.5s var(--delay, 0s) cubic-bezier(0.16,1,0.3,1) forwards;
+  }
+
+  .scroll-line {
+    width: 100%;
+    height: 30%;
+    background: rgba(255,255,255,0.6);
+    animation: scrollAnim 2s 2.4s ease-in-out infinite;
+    top: -30%;
+    position: relative;
+  }
+
+  /* ── Per-letter entrance ─────────────────────────────────── */
+  @keyframes letterIn {
+    0% {
+      opacity: 0;
+      transform: translateY(60px) rotateX(40deg) skewX(-4deg);
+      filter: blur(6px);
+    }
+    55% {
+      filter: blur(0px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0) rotateX(0deg) skewX(0deg);
+      filter: blur(0px);
+    }
   }
 
   .hero-letter {
     display: inline-block;
     opacity: 0;
-    animation: letterReveal 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-    transition: color 0.2s ease;
-    will-change: transform, opacity;
+    transform-origin: bottom center;
+    /* perspective makes the rotateX feel 3D */
+    perspective: 800px;
+    animation: letterIn 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    will-change: transform, opacity, filter;
     position: relative;
   }
 
-  .hero-letter.wave {
-    animation: letterWave 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-    color: rgba(255,255,255,1);
+  /* ── Hover wave lift ─────────────────────────────────────── */
+  @keyframes letterLift {
+    0%   { transform: translateY(0)    scaleY(1);    }
+    30%  { transform: translateY(-16px) scaleY(1.04); color: rgba(255,255,255,0.75); }
+    65%  { transform: translateY(-7px)  scaleY(1.01); }
+    100% { transform: translateY(0)    scaleY(1);    }
   }
 
-  /* Warning box */
+  .hero-letter.lifted {
+    animation: letterLift 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) forwards !important;
+  }
+
+  /* Italic style on hovered letter only — Playfair italic looks stunning */
+  .hero-letter:hover {
+    font-style: italic;
+    transition: font-style 0s;
+  }
+
+  /* ── Warning box ─────────────────────────────────────────── */
   .warning-box {
-    display: flex; align-items: stretch; gap: 0;
-    border: 1px solid rgba(255,255,255,0.08); border-left: none;
+    display: flex;
+    align-items: stretch;
+    border: 1px solid rgba(255,255,255,0.08);
+    border-left: none;
     border-radius: 0 6px 6px 0;
     background: rgba(255,255,255,0.032);
-    backdrop-filter: blur(4px); overflow: hidden; position: relative;
+    backdrop-filter: blur(4px);
+    overflow: hidden;
   }
+
   .warning-accent-bar {
-    width: 3px; flex-shrink: 0;
+    width: 3px;
+    flex-shrink: 0;
     background: rgba(255,255,255,0.35);
     animation: barPulse 4s ease-in-out infinite;
   }
-  .warning-content { padding: 16px 20px; display: flex; flex-direction: column; gap: 6px; }
-  .warning-headline { font-family: 'Lexend', sans-serif; font-weight: 400; font-size: clamp(0.75rem,1.4vw,0.875rem); letter-spacing: 0.01em; color: rgba(255,255,255,0.82); margin: 0; line-height: 1.3; }
-  .warning-body     { font-family: 'Lexend', sans-serif; font-weight: 200; font-size: clamp(0.68rem,1.2vw,0.78rem); color: rgba(255,255,255,0.38); margin: 0; line-height: 1.6; letter-spacing: 0.01em; }
-  .warning-domain   { font-family: 'Lexend', sans-serif; font-weight: 300; color: rgba(255,255,255,0.55); letter-spacing: 0.02em; }
+
+  .warning-content {
+    padding: 16px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .warning-headline {
+    font-family: 'Lexend', sans-serif;
+    font-weight: 400;
+    font-size: clamp(0.75rem, 1.4vw, 0.875rem);
+    letter-spacing: 0.01em;
+    color: rgba(255,255,255,0.82);
+    margin: 0;
+    line-height: 1.3;
+  }
+
+  .warning-body {
+    font-family: 'Lexend', sans-serif;
+    font-weight: 200;
+    font-size: clamp(0.68rem, 1.2vw, 0.78rem);
+    color: rgba(255,255,255,0.38);
+    margin: 0;
+    line-height: 1.6;
+    letter-spacing: 0.01em;
+  }
+
+  /* ── [isroilov.com] — clickable, stands out ─────────────── */
+  .warning-domain-link {
+    font-family: 'Lexend', sans-serif;
+    font-weight: 400;
+    font-size: inherit;
+    color: rgba(255,255,255,0.82);
+    letter-spacing: 0.04em;
+    text-decoration: none;
+    border-bottom: 1px solid rgba(255,255,255,0.28);
+    padding-bottom: 1px;
+    transition: color 0.25s ease, border-color 0.25s ease;
+    cursor: pointer;
+  }
+
+  .warning-domain-link:hover {
+    color: rgba(255,255,255,1);
+    border-bottom-color: rgba(255,255,255,0.75);
+  }
 </style>
 
 <script>
-  // ── Build per-letter spans ────────────────────────────────
-  const name = "ISROILOV";
+(function () {
+  const NAME = "ISROILOV";
   const container = document.getElementById("hero-name");
-  if (container) {
-    name.split("").forEach((char, i) => {
-      const span = document.createElement("span");
-      span.className = "hero-letter";
-      span.textContent = char;
-      // Stagger each letter 80ms apart, starting at 0.5s
-      span.style.animationDelay = (0.5 + i * 0.08) + "s";
-      container.appendChild(span);
-    });
+  if (!container) return;
 
-    // ── Hover wave effect ─────────────────────────────────
-    // When cursor passes over a letter, it jumps with spring physics.
-    // Adjacent letters get a gentler lift with slight delay.
-    const letters = Array.from(container.querySelectorAll(".hero-letter"));
+  // ── 1. Build letter spans ──────────────────────────────────
+  // Each letter gets its own <span> with staggered animation-delay.
+  // Letters begin animating at 0.55s, 100ms apart → total spread ~1.4s
+  NAME.split("").forEach((char, i) => {
+    const span = document.createElement("span");
+    span.className = "hero-letter";
+    span.textContent = char;
+    span.setAttribute("data-idx", String(i));
+    // Stagger: letter 0 starts at 0.55s, each subsequent +0.1s
+    span.style.animationDelay = (0.55 + i * 0.1) + "s";
+    container.appendChild(span);
+  });
 
-    letters.forEach((el, i) => {
-      el.addEventListener("mouseenter", () => {
-        // Animate the hovered letter
-        triggerWave(el);
-        // Ripple to neighbours with decay
-        [-2, -1, 1, 2].forEach(offset => {
-          const neighbour = letters[i + offset];
-          if (!neighbour) return;
-          const delay = Math.abs(offset) * 60; // ms
-          setTimeout(() => triggerWave(neighbour, Math.abs(offset)), delay);
-        });
+  // ── 2. Hover wave ──────────────────────────────────────────
+  // Moving the cursor across letters creates a spreading ripple.
+  // Each letter triggers neighbours with decayed intensity + offset delay.
+  const letters = Array.from(container.querySelectorAll(".hero-letter"));
+
+  function triggerLift(el) {
+    // Remove class to allow re-triggering on rapid passes
+    el.classList.remove("lifted");
+    // Force reflow so the animation restarts cleanly
+    void el.offsetWidth;
+    el.classList.add("lifted");
+    el.addEventListener("animationend", () => {
+      el.classList.remove("lifted");
+    }, { once: true });
+  }
+
+  letters.forEach((el, i) => {
+    el.addEventListener("mouseenter", () => {
+      // Primary: hovered letter
+      triggerLift(el);
+
+      // Ripple to neighbours — closer = sooner, farther = more delayed
+      const ripple = [
+        { offset: -1, delay: 55 },
+        { offset:  1, delay: 55 },
+        { offset: -2, delay: 120 },
+        { offset:  2, delay: 120 },
+        { offset: -3, delay: 200 },
+        { offset:  3, delay: 200 },
+      ];
+
+      ripple.forEach(({ offset, delay }) => {
+        const neighbour = letters[i + offset];
+        if (!neighbour) return;
+        setTimeout(() => triggerLift(neighbour), delay);
       });
     });
-
-    function triggerWave(el, distance = 0) {
-      // Remove the class first to allow re-triggering
-      el.classList.remove("wave");
-      // Force reflow
-      void el.offsetWidth;
-      // Scale the lift by distance (closer = bigger jump)
-      const intensity = 1 - distance * 0.3;
-      el.style.setProperty("--wave-lift", `-${Math.round(14 * intensity)}px`);
-      el.classList.add("wave");
-      el.addEventListener("animationend", () => el.classList.remove("wave"), { once: true });
-    }
-  }
+  });
+})();
 </script>
