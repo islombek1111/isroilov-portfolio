@@ -5,6 +5,7 @@ import Hero from '../components/Hero.astro';
 import FannedGallery from '../components/FannedGallery.jsx';
 import Books from '../components/Books.jsx';
 import Certs from '../components/Certs.jsx';
+import Stack from '../components/Stack.jsx';
 import Contact from '../components/Contact.astro';
 ---
 
@@ -15,19 +16,14 @@ import Contact from '../components/Contact.astro';
   <!-- PICS section -->
   <FannedGallery client:load />
 
-  <!-- BOOKS placeholder -->
- <Books client:visible />
+  <!-- BOOKS section -->
+  <Books client:visible />
 
-  <!-- CERTS placeholder -->
-<Certs client:visible />
+  <!-- CERTS section -->
+  <Certs client:visible />
 
-  <!-- NOTES placeholder -->
-  <section id="notes" class="min-h-screen flex items-center justify-center px-6 md:px-12">
-    <div class="text-center">
-      <p class="font-mono text-xs tracking-[0.3em] uppercase text-white/12 mb-4">Coming Next</p>
-      <h2 class="font-display text-5xl md:text-7xl font-light tracking-widest text-white/8">Notes</h2>
-    </div>
-  </section>
+  <!-- STACK section (replaces Notes) -->
+  <Stack client:visible />
 
   <Contact />
 </BaseLayout>
@@ -36,18 +32,11 @@ import Contact from '../components/Contact.astro';
   @import url('https://fonts.googleapis.com/css2?family=Lexend:wght@200;300;400&display=swap');
 
   /* Global Scrollbar Hiding */
-  .no-scrollbar::-webkit-scrollbar {
-    display: none;
-  }
-  .no-scrollbar {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-  }
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
   /* Necessary for 3D flip */
-  .perspective-1000 {
-    perspective: 1000px;
-  }
+  .perspective-1000 { perspective: 1000px; }
 
   html {
     background-color: black;

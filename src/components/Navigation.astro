@@ -19,13 +19,13 @@ import SlideButton from './SlideButton.jsx';
       </span>
     </a>
 
-    <!-- Desktop links -->
+    <!-- Desktop links — "Notes" → "Stack", href → #notes (Stack uses id="notes") -->
     <ul class="hidden md:flex items-center gap-10">
       {[
         { label: 'Pics',  href: '#pics'  },
         { label: 'Books', href: '#books' },
         { label: 'Certs', href: '#certs' },
-        { label: 'Notes', href: '#notes' },
+        { label: 'Stack', href: '#notes' },
       ].map(({ label, href }) => (
         <li>
           <a href={href} data-hover
@@ -37,7 +37,7 @@ import SlideButton from './SlideButton.jsx';
       ))}
     </ul>
 
-      <SlideButton client:load />
+    <SlideButton client:load />
 
     <!-- Mobile hamburger -->
     <button id="menu-toggle" data-hover aria-label="Open menu" class="md:hidden flex flex-col gap-1.5 p-2">
@@ -54,7 +54,7 @@ import SlideButton from './SlideButton.jsx';
       { label: 'Pics',  href: '#pics'  },
       { label: 'Books', href: '#books' },
       { label: 'Certs', href: '#certs' },
-      { label: 'Notes', href: '#notes' },
+      { label: 'Stack', href: '#notes' },
     ].map(({ label, href }) => (
       <a href={href} class="font-display text-2xl text-white/55 hover:text-white tracking-widest transition-colors mobile-link">
         {label}
@@ -67,7 +67,6 @@ import SlideButton from './SlideButton.jsx';
 </header>
 
 <script>
-  // Scroll → frosted backdrop
   const backdrop = document.getElementById('nav-backdrop');
   window.addEventListener('scroll', () => {
     if (window.scrollY > 40) {
@@ -77,7 +76,6 @@ import SlideButton from './SlideButton.jsx';
     }
   });
 
-  // Mobile toggle
   const toggle = document.getElementById('menu-toggle');
   const menu   = document.getElementById('mobile-menu');
   const lines  = document.querySelectorAll('.ham-line');
