@@ -6,23 +6,17 @@ import { motion } from "framer-motion";
 // SVG logos are used where possible for crisp rendering at all sizes.
 const TOOLS = [
   {
-    id: "powerbi",
-    name: "Power BI",
+    id: "figma",
+    name: "Figma",
     // Official Microsoft Power BI icon via SimpleIcons CDN
-    src: "https://cdn.simpleicons.org/powerbi/F2C811",
-    color: "#F2C811",
+    src: "https://cdn.simpleicons.org/figma/F24E1E",
+    color: "##F24E1E",
   },
   {
-    id: "excel",
-    name: "Excel",
-    src: "https://cdn.simpleicons.org/microsoftexcel/217346",
-    color: "#217346",
-  },
-  {
-    id: "python",
-    name: "Python",
-    src: "https://cdn.simpleicons.org/python/3776AB",
-    color: "#3776AB",
+    id: "appsscript",
+    name: "Apps Script",
+    src: "https://cdn.simpleicons.org/googleappsscript/4285F4",
+    color: "#4285F4",
   },
   {
     id: "notion",
