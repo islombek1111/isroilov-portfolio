@@ -26,7 +26,7 @@ const dashboardData = {
       title: "MADE to STICK",
       author: "Chip & Dan Heath",
       progress: 65,
-      cover: ""/images/books/madetostick.jpg""
+      cover: "/images/books/madetostick.jpg"
     },
     podcast: {
       title: "Norman Ohler: Hitler, Nazis, Drugs, WW2, Blitzkrieg, LSD, MKUltra & CIA",
