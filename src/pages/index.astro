@@ -2,7 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Navigation from '../components/Navigation.astro';
 import Hero from '../components/Hero.astro';
-import FannedGallery from '../components/FannedGallery.jsx';
+import Dashboard from '../components/Dashboard.jsx';
 import Books from '../components/Books.jsx';
 import Certs from '../components/Certs.jsx';
 import Stack from '../components/Stack.jsx';
@@ -13,8 +13,8 @@ import Contact from '../components/Contact.astro';
   <Navigation />
   <Hero />
 
-  <!-- PICS section -->
-  <FannedGallery client:load />
+  <!-- DASH section -->
+ <Dashboard client:visible />
 
   <!-- BOOKS section -->
   <Books client:visible />
