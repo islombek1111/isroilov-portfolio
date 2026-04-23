@@ -5,7 +5,7 @@
 <!-- Preload Playfair Display from Google Fonts for the name -->
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet" />
 
 <section id="home" class="relative min-h-screen flex flex-col justify-end pb-16 md:pb-24 px-6 md:px-12 overflow-hidden">
 
@@ -35,10 +35,12 @@
       <span class="font-mono text-[10px] tracking-[0.35em] uppercase text-white/35">Islombek Isroilov</span>
     </div>
 
-        <!-- Name -->
+    <!-- Name — clean Playfair, smooth reveal, no JS -->
     <div class="overflow-hidden mb-10">
-      <h1 class="font-display font-light leading-[0.9] tracking-[0.12em] text-white"
-        style="font-size: clamp(3.5rem,12vw,10rem); opacity:0; animation: nameReveal 1.4s 0.4s cubic-bezier(0.16,1,0.3,1) forwards;">
+      <h1
+        class="hero-name"
+        style="font-size: clamp(3.5rem,12vw,10rem);"
+      >
         ISROILOV
       </h1>
     </div>
@@ -46,14 +48,13 @@
     <!-- Warning box -->
     <div
       class="warning-box anim-fade-up"
-      style="--delay:1.8s; max-width: 540px;"
+      style="--delay:1.4s; max-width: 540px;"
     >
       <div class="warning-accent-bar"></div>
       <div class="warning-content">
         <p class="warning-headline">No portfolio fluff here.</p>
         <p class="warning-body">
           This is just a space where I add, change, or nuke stuff whenever I feel like it.
-          <!-- FIX: [isroilov.com] is now a real link, styled to stand out -->
           <a href="https://isroilov.com" class="warning-domain-link">isroilov.com</a>
           is not a reflection of who I am or what I do.
         </p>
@@ -62,12 +63,12 @@
 
     <!-- Divider -->
     <div class="h-px w-full bg-white/5 mt-10 mb-10 overflow-hidden">
-      <div class="divider-line" style="--delay:2.0s"></div>
+      <div class="divider-line" style="--delay:1.6s"></div>
     </div>
 
     <!-- CTAs -->
-    <div class="flex items-center gap-5 anim-fade-up" style="--delay:2.1s">
-      <a href="#pics" data-hover class="btn-glow px-7 py-3 text-xs tracking-[0.25em] uppercase font-body rounded-full">
+    <div class="flex items-center gap-5 anim-fade-up" style="--delay:1.7s">
+      <a href="#dashboard" data-hover class="btn-glow px-7 py-3 text-xs tracking-[0.25em] uppercase font-body rounded-full">
         See My Stuff
       </a>
       <a href="#contact" data-hover
@@ -79,7 +80,7 @@
   </div>
 
   <!-- Scroll indicator -->
-  <div class="absolute bottom-8 right-6 md:right-12 z-10 flex flex-col items-center gap-3 anim-fade-up" style="--delay:2.3s">
+  <div class="absolute bottom-8 right-6 md:right-12 z-10 flex flex-col items-center gap-3 anim-fade-up" style="--delay:2.0s">
     <span class="font-mono text-[9px] tracking-[0.3em] uppercase text-white/22" style="writing-mode:vertical-lr;">Scroll</span>
     <div class="w-px h-12 overflow-hidden" style="background: linear-gradient(to bottom, rgba(255,255,255,0.18), transparent);">
       <div class="scroll-line"></div>
@@ -88,9 +89,6 @@
 </section>
 
 <style>
-  /* ── Fonts needed only for the name ─────────────────────── */
-  /* Playfair Display loaded via <link> above for speed */
-
   /* ── Utility animations ──────────────────────────────────── */
   @keyframes lineGrow   { to { height: 100%; } }
   @keyframes lineExpand { to { width: 100%; } }
@@ -100,6 +98,26 @@
   @keyframes fadeUp {
     from { opacity:0; transform:translateY(22px); }
     to   { opacity:1; transform:translateY(0); }
+  }
+
+  /* ── ISROILOV — Playfair, smooth fade-up ─────────────────── */
+  @keyframes nameReveal {
+    0%   { opacity: 0; transform: translateY(32px); filter: blur(4px); }
+    60%  { filter: blur(0px); }
+    100% { opacity: 1; transform: translateY(0); filter: blur(0px); }
+  }
+
+  .hero-name {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-weight: 400;
+    font-style: normal;
+    line-height: 0.9;
+    letter-spacing: 0.08em;
+    color: white;
+    opacity: 0;
+    animation: nameReveal 1.6s 0.5s cubic-bezier(0.16,1,0.3,1) forwards;
+    display: block;
+    will-change: transform, opacity, filter;
   }
 
   .anim-fade-up {
@@ -128,52 +146,6 @@
     animation: scrollAnim 2s 2.4s ease-in-out infinite;
     top: -30%;
     position: relative;
-  }
-
-  /* ── Per-letter entrance ─────────────────────────────────── */
-  @keyframes letterIn {
-    0% {
-      opacity: 0;
-      transform: translateY(60px) rotateX(40deg) skewX(-4deg);
-      filter: blur(6px);
-    }
-    55% {
-      filter: blur(0px);
-    }
-    100% {
-      opacity: 1;
-      transform: translateY(0) rotateX(0deg) skewX(0deg);
-      filter: blur(0px);
-    }
-  }
-
-  .hero-letter {
-    display: inline-block;
-    opacity: 0;
-    transform-origin: bottom center;
-    /* perspective makes the rotateX feel 3D */
-    perspective: 800px;
-    animation: letterIn 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-    will-change: transform, opacity, filter;
-    position: relative;
-  }
-
-  /* ── Hover wave lift ─────────────────────────────────────── */
-  @keyframes letterLift {
-    0%   { transform: translateY(0)    scaleY(1);    }
-    30%  { transform: translateY(-16px) scaleY(1.04); color: rgba(255,255,255,0.75); }
-    65%  { transform: translateY(-7px)  scaleY(1.01); }
-    100% { transform: translateY(0)    scaleY(1);    }
-  }
-
-  .hero-letter.lifted {
-    animation: letterLift 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) forwards !important;
-  }
-
-  /* Italic style on hovered letter only — Playfair italic looks stunning */
-  .hero-letter:hover {
-    font-style: italic;
-    transition: font-style 0s;
   }
 
   /* ── Warning box ─────────────────────────────────────────── */
@@ -222,7 +194,6 @@
     letter-spacing: 0.01em;
   }
 
-  /* ── [isroilov.com] — clickable, stands out ─────────────── */
   .warning-domain-link {
     font-family: 'Lexend', sans-serif;
     font-weight: 400;
@@ -241,63 +212,3 @@
     border-bottom-color: rgba(255,255,255,0.75);
   }
 </style>
-
-<script>
-(function () {
-  const NAME = "ISROILOV";
-  const container = document.getElementById("hero-name");
-  if (!container) return;
-
-  // ── 1. Build letter spans ──────────────────────────────────
-  // Each letter gets its own <span> with staggered animation-delay.
-  // Letters begin animating at 0.55s, 100ms apart → total spread ~1.4s
-  NAME.split("").forEach((char, i) => {
-    const span = document.createElement("span");
-    span.className = "hero-letter";
-    span.textContent = char;
-    span.setAttribute("data-idx", String(i));
-    // Stagger: letter 0 starts at 0.55s, each subsequent +0.1s
-    span.style.animationDelay = (0.55 + i * 0.1) + "s";
-    container.appendChild(span);
-  });
-
-  // ── 2. Hover wave ──────────────────────────────────────────
-  // Moving the cursor across letters creates a spreading ripple.
-  // Each letter triggers neighbours with decayed intensity + offset delay.
-  const letters = Array.from(container.querySelectorAll(".hero-letter"));
-
-  function triggerLift(el) {
-    // Remove class to allow re-triggering on rapid passes
-    el.classList.remove("lifted");
-    // Force reflow so the animation restarts cleanly
-    void el.offsetWidth;
-    el.classList.add("lifted");
-    el.addEventListener("animationend", () => {
-      el.classList.remove("lifted");
-    }, { once: true });
-  }
-
-  letters.forEach((el, i) => {
-    el.addEventListener("mouseenter", () => {
-      // Primary: hovered letter
-      triggerLift(el);
-
-      // Ripple to neighbours — closer = sooner, farther = more delayed
-      const ripple = [
-        { offset: -1, delay: 55 },
-        { offset:  1, delay: 55 },
-        { offset: -2, delay: 120 },
-        { offset:  2, delay: 120 },
-        { offset: -3, delay: 200 },
-        { offset:  3, delay: 200 },
-      ];
-
-      ripple.forEach(({ offset, delay }) => {
-        const neighbour = letters[i + offset];
-        if (!neighbour) return;
-        setTimeout(() => triggerLift(neighbour), delay);
-      });
-    });
-  });
-})();
-</script>

@@ -22,7 +22,7 @@ import SlideButton from './SlideButton.jsx';
     <!-- Desktop links -->
     <ul class="hidden md:flex items-center gap-10">
       {[
-        { label: 'Dash',  href: '#dashboard'  },
+        { label: 'Dash',  href: '#dashboard' },
         { label: 'Books', href: '#books' },
         { label: 'Certs', href: '#certs' },
         { label: 'Stack', href: '#notes' },
@@ -51,7 +51,7 @@ import SlideButton from './SlideButton.jsx';
     class="md:hidden absolute top-full left-0 right-0 bg-black/96 backdrop-blur-xl border-t border-white/5
            px-6 py-8 flex flex-col gap-6 translate-y-[-10px] opacity-0 pointer-events-none transition-all duration-300">
     {[
-      { label: 'Pics',  href: '#pics'  },
+      { label: 'Dash',  href: '#dashboard' },
       { label: 'Books', href: '#books' },
       { label: 'Certs', href: '#certs' },
       { label: 'Stack', href: '#notes' },
@@ -66,20 +66,12 @@ import SlideButton from './SlideButton.jsx';
   </div>
 </header>
 
-<!--
-  FIX 5: Cursor redesign
-  Two-layer cursor:
-  • Inner dot  — 5px white dot, moves exactly with mouse, instant (no delay)
-  • Outer ring — 28px transparent ring with white border, follows with lerp lag
-  On hover: ring shrinks to 20px and border brightens — subtler, doesn't cover text
--->
 <div id="cursor-dot"  aria-hidden="true"></div>
 <div id="cursor-ring" aria-hidden="true"></div>
 
 <style>
   * { cursor: none !important; }
 
-  /* Tiny sharp dot — exact cursor position */
   #cursor-dot {
     position: fixed;
     width: 5px; height: 5px;
@@ -92,20 +84,18 @@ import SlideButton from './SlideButton.jsx';
     transition: width 0.2s ease, height 0.2s ease;
   }
 
-  /* Outer ring — transparent fill, just the outline */
   #cursor-ring {
     position: fixed;
     width: 28px; height: 28px;
     border-radius: 50%;
     border: 1px solid rgba(255,255,255,0.55);
-    background: transparent;          /* ← no fill, won't cover text */
+    background: transparent;
     pointer-events: none;
     z-index: 9998;
     transform: translate(-50%, -50%);
     transition: width 0.25s ease, height 0.25s ease, border-color 0.25s ease, opacity 0.25s ease;
   }
 
-  /* Hover state: ring shrinks + brightens, dot stays */
   #cursor-dot.hovering  { width: 7px; height: 7px; }
   #cursor-ring.hovering {
     width: 20px; height: 20px;
@@ -120,50 +110,34 @@ import SlideButton from './SlideButton.jsx';
 
   let mouseX = 0, mouseY = 0;
   let ringX  = 0, ringY  = 0;
-  let rafId  = null;
 
-  // Dot follows instantly
   document.addEventListener("mousemove", (e) => {
     mouseX = e.clientX; mouseY = e.clientY;
     dot.style.left = mouseX + "px";
     dot.style.top  = mouseY + "px";
   });
 
-  // Ring follows with lerp (smooth lag)
   function lerp(a, b, t) { return a + (b - a) * t; }
   function animateRing() {
     ringX = lerp(ringX, mouseX, 0.18);
     ringY = lerp(ringY, mouseY, 0.18);
     ring.style.left = ringX + "px";
     ring.style.top  = ringY + "px";
-    rafId = requestAnimationFrame(animateRing);
+    requestAnimationFrame(animateRing);
   }
   animateRing();
 
-  // Hover detection
   const interactiveEls = document.querySelectorAll("a, button, [data-hover]");
   interactiveEls.forEach(el => {
-    el.addEventListener("mouseenter", () => {
-      dot.classList.add("hovering");
-      ring.classList.add("hovering");
-    });
-    el.addEventListener("mouseleave", () => {
-      dot.classList.remove("hovering");
-      ring.classList.remove("hovering");
-    });
+    el.addEventListener("mouseenter", () => { dot.classList.add("hovering"); ring.classList.add("hovering"); });
+    el.addEventListener("mouseleave", () => { dot.classList.remove("hovering"); ring.classList.remove("hovering"); });
   });
 
-  // Hide when cursor leaves window
-  document.addEventListener("mouseleave", () => {
-    dot.style.opacity = "0"; ring.style.opacity = "0";
-  });
-  document.addEventListener("mouseenter", () => {
-    dot.style.opacity = "1"; ring.style.opacity = "1";
-  });
+  document.addEventListener("mouseleave", () => { dot.style.opacity = "0"; ring.style.opacity = "0"; });
+  document.addEventListener("mouseenter", () => { dot.style.opacity = "1"; ring.style.opacity = "1"; });
 </script>
 
 <script>
-  // Nav backdrop on scroll
   const backdrop = document.getElementById('nav-backdrop');
   window.addEventListener('scroll', () => {
     if (window.scrollY > 40) {
@@ -173,7 +147,6 @@ import SlideButton from './SlideButton.jsx';
     }
   });
 
-  // Mobile toggle
   const toggle = document.getElementById('menu-toggle');
   const menu   = document.getElementById('mobile-menu');
   const lines  = document.querySelectorAll('.ham-line');
