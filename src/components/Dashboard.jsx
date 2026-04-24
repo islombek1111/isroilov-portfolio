@@ -518,7 +518,6 @@ function BookCard() {
             display:"block", objectFit:"contain",
             borderRadius:6,
             boxShadow:"0 16px 52px rgba(0,0,0,0.9), 0 2px 0 rgba(255,255,255,0.05)" }}
-          onError={e => { (e.target as HTMLImageElement).style.display = "none"; }}
         />
       </div>
 
