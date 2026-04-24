@@ -145,7 +145,7 @@ function VoiceNotePlayer() {
 
       <p style={{ fontFamily:"JetBrains Mono, monospace", fontSize:8, letterSpacing:"0.3em",
         textTransform:"uppercase", color:"rgba(255,255,255,0.18)", margin:0,
-        textAlign:"center", whiteSpace:"nowrap" }}>Why I Hit The Gym</p>
+        textAlign:"center", whiteSpace:"nowrap" }}>WHY?</p>
 
       {/* Waveform bars */}
       <div style={{ display:"flex", alignItems:"center", gap:3, height:40 }}>
@@ -443,7 +443,7 @@ function GymCard() {
 }
 
 // ─────────────────────────────────────────────────────────────
-//  BOOK CARD  —  full cover + blurred bg to fill gaps
+//  BOOK CARD — full cover, title + author at bottom flush
 // ─────────────────────────────────────────────────────────────
 
 function BookCard() {
@@ -452,16 +452,29 @@ function BookCard() {
 
   return (
     <motion.div
-      initial={{ opacity:0, y:20 }} whileInView={{ opacity:1, y:0 }}
-      viewport={{ once:true }} transition={{ duration:0.7, delay:0.08, ease }}
-      style={{ background:"#060606", border:"1px solid rgba(255,255,255,0.07)",
-        borderRadius:16, position:"relative", overflow:"hidden",
-        display:"flex", flexDirection:"column", boxSizing:"border-box" }}
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.7, delay: 0.08, ease }}
+      style={{
+        background: "#060606",
+        border: "1px solid rgba(255,255,255,0.07)",
+        borderRadius: 16,
+        position: "relative",
+        overflow: "hidden",
+        display: "flex",
+        flexDirection: "column",
+        boxSizing: "border-box",
+      }}
     >
-      {/* Warning icon */}
-      <div style={{ position:"absolute", top:14, right:14, zIndex:40 }}>
-        <motion.div onMouseEnter={() => setWarningHov(true)} onMouseLeave={() => setWarningHov(false)}
-          whileHover={{ scale:1.15 }} style={{ cursor:"help", position:"relative" }}>
+      {/* Warning triangle — top-right, always visible above cover */}
+      <div style={{ position: "absolute", top: 14, right: 14, zIndex: 30 }}>
+        <motion.div
+          onMouseEnter={() => setWarningHov(true)}
+          onMouseLeave={() => setWarningHov(false)}
+          whileHover={{ scale: 1.15 }}
+          style={{ cursor: "help", position: "relative" }}
+        >
           <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
             <path d="M9 2L16.5 15H1.5L9 2Z" stroke="rgba(255,200,60,0.55)" strokeWidth="1.2" fill="rgba(255,200,60,0.08)" strokeLinejoin="round"/>
             <path d="M9 7.5V10.5" stroke="rgba(255,200,60,0.65)" strokeWidth="1.2" strokeLinecap="round"/>
@@ -469,17 +482,28 @@ function BookCard() {
           </svg>
           <AnimatePresence>
             {warningHov && (
-              <motion.div initial={{opacity:0,y:6,scale:0.95}} animate={{opacity:1,y:0,scale:1}}
-                exit={{opacity:0,y:4,scale:0.95}} transition={{duration:0.2}}
-                style={{ position:"absolute", top:"calc(100% + 10px)", right:0, width:220,
-                  background:"rgba(8,8,8,0.9)", backdropFilter:"blur(20px)", WebkitBackdropFilter:"blur(20px)",
-                  border:"1px solid rgba(255,200,60,0.15)", borderRadius:10,
-                  padding:"12px 14px", pointerEvents:"none", zIndex:100 }}>
-                <div style={{ display:"flex", alignItems:"center", gap:6, marginBottom:8 }}>
-                  <svg width="11" height="11" viewBox="0 0 18 18" fill="none"><path d="M9 2L16.5 15H1.5L9 2Z" stroke="rgba(255,200,60,0.7)" strokeWidth="1.4" fill="none" strokeLinejoin="round"/></svg>
-                  <span style={{ fontFamily:"JetBrains Mono, monospace", fontSize:8, letterSpacing:"0.2em", textTransform:"uppercase", color:"rgba(255,200,60,0.6)" }}>Reader Notice</span>
+              <motion.div
+                initial={{ opacity: 0, y: 6, scale: 0.95 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: 4, scale: 0.95 }}
+                transition={{ duration: 0.2 }}
+                style={{
+                  position: "absolute", top: "calc(100% + 10px)", right: 0,
+                  width: 220,
+                  background: "rgba(8,8,8,0.88)",
+                  backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)",
+                  border: "1px solid rgba(255,200,60,0.15)",
+                  borderRadius: 10, padding: "12px 14px",
+                  pointerEvents: "none", zIndex: 100,
+                }}
+              >
+                <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 8 }}>
+                  <svg width="11" height="11" viewBox="0 0 18 18" fill="none">
+                    <path d="M9 2L16.5 15H1.5L9 2Z" stroke="rgba(255,200,60,0.7)" strokeWidth="1.4" fill="none" strokeLinejoin="round"/>
+                  </svg>
+                  <span style={{ fontFamily: "JetBrains Mono, monospace", fontSize: 8, letterSpacing: "0.2em", textTransform: "uppercase", color: "rgba(255,200,60,0.6)" }}>Reader Notice</span>
                 </div>
-                <p style={{ fontFamily:"Lexend, sans-serif", fontWeight:200, fontSize:11, color:"rgba(255,255,255,0.55)", lineHeight:1.6, margin:0 }}>
+                <p style={{ fontFamily: "Lexend, sans-serif", fontWeight: 200, fontSize: 11, color: "rgba(255,255,255,0.55)", lineHeight: 1.6, margin: 0 }}>
                   I do not read books to completion. I start from a random page, skip chapters, and get stuck on a paragraph indefinitely.
                 </p>
               </motion.div>
@@ -489,45 +513,46 @@ function BookCard() {
       </div>
 
       {/* Eyebrow */}
-      <div style={{ padding:"16px 18px 12px", flexShrink:0, position:"relative", zIndex:2 }}>
-        <p style={{ fontFamily:"JetBrains Mono, monospace", fontSize:9, letterSpacing:"0.32em",
-          textTransform:"uppercase", color:"rgba(255,255,255,0.2)", margin:0 }}>Currently Reading</p>
+      <div style={{ padding: "16px 18px 0", flexShrink: 0 }}>
+        <p style={{ fontFamily: "JetBrains Mono, monospace", fontSize: 9, letterSpacing: "0.32em", textTransform: "uppercase", color: "rgba(255,255,255,0.2)", margin: 0 }}>Currently Reading</p>
       </div>
 
-      {/* Cover area — blurred bg + sharp cover */}
-      <div style={{ flex:1, position:"relative", overflow:"hidden",
-        display:"flex", alignItems:"center", justifyContent:"center", minHeight:200 }}>
-
-        {/* Blurred background — same image, covers dark corners */}
-        <div style={{ position:"absolute", inset:0, zIndex:0,
-          backgroundImage:`url(${coverImg})`,
-          backgroundSize:"cover", backgroundPosition:"center",
-          filter:"blur(22px) brightness(0.25) saturate(0.5)",
-          transform:"scale(1.15)" }} />
-
-        {/* Soft vignette */}
-        <div style={{ position:"absolute", inset:0, zIndex:1,
-          background:"radial-gradient(ellipse at center, transparent 35%, rgba(6,6,6,0.6) 100%)" }} />
-
-        {/* Sharp cover — natural ratio, never cropped */}
-        <motion.img src={coverImg} alt={title}
-          whileHover={{ scale:1.03 }} transition={{ duration:0.4, ease }}
-          style={{ position:"relative", zIndex:2,
-            maxWidth:"80%", maxHeight:"100%",
-            width:"auto", height:"auto",
-            display:"block", objectFit:"contain",
-            borderRadius:6,
-            boxShadow:"0 16px 52px rgba(0,0,0,0.9), 0 2px 0 rgba(255,255,255,0.05)" }}
-        />
+      {/* Book cover — fills the card */}
+      <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", padding: "14px 18px 0", minHeight: 0 }}>
+        <motion.div
+          whileHover={{ scale: 1.02 }}
+          transition={{ duration: 0.4, ease }}
+          style={{
+            width: "100%",
+            borderRadius: 8,
+            overflow: "hidden",
+            boxShadow: "0 12px 40px rgba(0,0,0,0.85), 0 2px 0 rgba(255,255,255,0.04)",
+            background: "#111",
+            aspectRatio: "2/3",
+            maxHeight: 260,
+          }}
+        >
+          <img
+            src={coverImg}
+            alt={title}
+            style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+            onError={e => { e.target.style.background = "#1a1a1a"; e.target.src = ""; }}
+          />
+        </motion.div>
       </div>
 
-      {/* Title + author — same size as VideoCard */}
-      <div style={{ padding:"14px 18px 18px", flexShrink:0, position:"relative", zIndex:2 }}>
-        <h4 style={{ fontFamily:"Lexend, sans-serif", fontWeight:300, fontSize:14,
-          color:"rgba(255,255,255,0.85)", margin:"0 0 4px", lineHeight:1.35, letterSpacing:"-0.01em",
-          whiteSpace:"nowrap", overflow:"hidden", textOverflow:"ellipsis" }}>{title}</h4>
-        <p style={{ fontFamily:"JetBrains Mono, monospace", fontSize:9,
-          color:"rgba(255,255,255,0.3)", margin:0, letterSpacing:"0.08em" }}>{author}</p>
+      {/* Title + author — bottom, same visual weight as video card's title/source */}
+      <div style={{ padding: "14px 18px 18px", flexShrink: 0 }}>
+        <h4 style={{
+          fontFamily: "Lexend, sans-serif", fontWeight: 300, fontSize: 14,
+          color: "rgba(255,255,255,0.85)", margin: "0 0 4px",
+          lineHeight: 1.35, letterSpacing: "-0.01em",
+          whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis",
+        }}>{title}</h4>
+        <p style={{
+          fontFamily: "JetBrains Mono, monospace", fontSize: 9,
+          color: "rgba(255,255,255,0.3)", margin: 0, letterSpacing: "0.08em",
+        }}>{author}</p>
       </div>
     </motion.div>
   );
