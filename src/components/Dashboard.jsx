@@ -497,6 +497,7 @@ function BookCard() {
         display: "flex",
         flexDirection: "column",
         boxSizing: "border-box",
+        justifyContent: "space-between",
       }}
     >
       {/* Warning triangle — top-right, always visible above cover */}
@@ -550,9 +551,9 @@ function BookCard() {
       </div>
 
 {/* Book cover — blurred bg fills gaps, sharp cover shown in full */}
-      <div style={{ flexShrink: 0, height: 220, position: "relative", overflow: "hidden",
+    <div style={{ flexShrink: 0, height: 220, position: "relative", overflow: "hidden",
         display: "flex", alignItems: "center", justifyContent: "center",
-        padding: "0" }}>
+        padding: "0", margin: "12px 0 0" }}>
 
         {/* Blurred background — fills dark corners around cover */}
         <div style={{
