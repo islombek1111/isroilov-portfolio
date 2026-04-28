@@ -17,6 +17,7 @@ const dashboardData = {
         "2026-04-02": 153, "2026-04-05": 108, "2026-04-06": 126,
         "2026-04-11": 87,  "2026-04-12": 71,  "2026-04-16": 75,
         "2026-04-19": 67,  "2026-04-23": 77, "2026-04-24": 82,
+        "2026-04-28": 116,
       },
     },
     "2026-03": {
@@ -282,6 +283,16 @@ function GymCard() {
       x: r.left - (cr?.left||0) + CELL/2, y: r.top - (cr?.top||0) - 36 });
   }
 
+ // Detect mobile — hook inside the component is fine
+  const [isMobile, setIsMobile] = useState(() =>
+    typeof window !== "undefined" ? window.innerWidth < 700 : false
+  );
+  useEffect(() => {
+    const handler = () => setIsMobile(window.innerWidth < 700);
+    window.addEventListener("resize", handler);
+    return () => window.removeEventListener("resize", handler);
+  }, []);
+
   return (
     <motion.div
       initial={{ opacity:0, y:20 }} whileInView={{ opacity:1, y:0 }}
@@ -290,22 +301,26 @@ function GymCard() {
         background:"#060606", border:"1px solid rgba(255,255,255,0.07)",
         borderRadius:16, padding:"28px 28px 24px",
         position:"relative", overflow:"hidden",
-        /* ── KEY: flex-row so right column sits beside, not below ── */
-        display:"flex", flexDirection:"row", alignItems:"stretch", gap:0,
+        display:"flex",
+        flexDirection: isMobile ? "column" : "row",
+        alignItems:"stretch", gap:0,
       }}
     >
       {/* Ambient glow */}
       <div style={{ position:"absolute", top:-60, right:-60, width:200, height:200, borderRadius:"50%",
         background:"radial-gradient(circle,rgba(19,38,92,0.18) 0%,transparent 70%)", pointerEvents:"none" }} />
 
-      {/* ── LEFT: heatmap ── */}
+      {/* ── LEFT / TOP: heatmap ── */}
       <div style={{ flex:"1 1 auto", minWidth:0 }}>
 
-        {/* Header */}
-        <div style={{ display:"flex", alignItems:"flex-start", justifyContent:"space-between", marginBottom:20, flexWrap:"wrap", gap:12 }}>
+        {/* Header — on mobile, dropdowns stack below title */}
+        <div style={{ display:"flex", alignItems:"flex-start", justifyContent:"space-between",
+          marginBottom:20, flexWrap:"wrap", gap:12 }}>
           <div>
-            <p style={{ fontFamily:"JetBrains Mono, monospace", fontSize:9, letterSpacing:"0.32em", textTransform:"uppercase", color:"rgba(255,255,255,0.2)", margin:"0 0 6px" }}>Consistency</p>
-            <h3 style={{ fontFamily:"Lexend, sans-serif", fontWeight:300, fontSize:18, color:"rgba(255,255,255,0.88)", margin:0, letterSpacing:"-0.01em" }}>Gym Heatmap</h3>
+            <p style={{ fontFamily:"JetBrains Mono, monospace", fontSize:9, letterSpacing:"0.32em",
+              textTransform:"uppercase", color:"rgba(255,255,255,0.2)", margin:"0 0 6px" }}>Consistency</p>
+            <h3 style={{ fontFamily:"Lexend, sans-serif", fontWeight:300, fontSize:18,
+              color:"rgba(255,255,255,0.88)", margin:0, letterSpacing:"-0.01em" }}>Gym Heatmap</h3>
           </div>
           <div style={{ display:"flex", gap:8, alignItems:"center", flexWrap:"wrap" }}>
             {/* Month */}
@@ -381,13 +396,15 @@ function GymCard() {
           <div style={{ display:"inline-block", minWidth:"100%" }}>
             <div style={{ display:"flex", gap:GAP, marginBottom:6, paddingLeft:36 }}>
               {DAYS.map(d => (
-                <div key={d} style={{ width:CELL, textAlign:"center", fontFamily:"JetBrains Mono, monospace", fontSize:8, color:"rgba(255,255,255,0.2)", letterSpacing:"0.06em" }}>{d}</div>
+                <div key={d} style={{ width:CELL, textAlign:"center", fontFamily:"JetBrains Mono, monospace",
+                  fontSize:8, color:"rgba(255,255,255,0.2)", letterSpacing:"0.06em" }}>{d}</div>
               ))}
             </div>
             <div style={{ display:"flex", flexDirection:"column", gap:GAP }}>
               {grid.map((row, w) => (
                 <div key={w} style={{ display:"flex", gap:GAP, alignItems:"center" }}>
-                  <div style={{ width:30, fontFamily:"JetBrains Mono, monospace", fontSize:8, color:"rgba(255,255,255,0.15)", textAlign:"right", paddingRight:6, flexShrink:0 }}>W{w+1}</div>
+                  <div style={{ width:30, fontFamily:"JetBrains Mono, monospace", fontSize:8,
+                    color:"rgba(255,255,255,0.15)", textAlign:"right", paddingRight:6, flexShrink:0 }}>W{w+1}</div>
                   {row.map((cell, d) => {
                     const dim = selectedWeek!=="all" && cell && !cell.inWeek;
                     return (
@@ -410,7 +427,8 @@ function GymCard() {
             <div style={{ display:"flex", alignItems:"center", gap:6, marginTop:14, paddingLeft:36 }}>
               <span style={{ fontFamily:"JetBrains Mono, monospace", fontSize:8, color:"rgba(255,255,255,0.2)" }}>Less</span>
               {[0,0.25,0.5,0.75,1].map(t => (
-                <div key={t} style={{ width:12, height:12, borderRadius:3, background: minutesToColor(t===0?0:Math.round(60+120*t)) }} />
+                <div key={t} style={{ width:12, height:12, borderRadius:3,
+                  background: minutesToColor(t===0?0:Math.round(60+120*t)) }} />
               ))}
               <span style={{ fontFamily:"JetBrains Mono, monospace", fontSize:8, color:"rgba(255,255,255,0.2)" }}>More</span>
             </div>
@@ -418,24 +436,38 @@ function GymCard() {
 
           <AnimatePresence>
             {tooltip && (
-              <motion.div initial={{opacity:0,y:4,scale:0.96}} animate={{opacity:1,y:0,scale:1}} exit={{opacity:0,scale:0.94}} transition={{duration:0.15}}
+              <motion.div initial={{opacity:0,y:4,scale:0.96}} animate={{opacity:1,y:0,scale:1}}
+                exit={{opacity:0,scale:0.94}} transition={{duration:0.15}}
                 style={{ position:"absolute", left:tooltip.x, top:tooltip.y, transform:"translateX(-50%)",
                   background:"rgba(10,10,10,0.92)", backdropFilter:"blur(14px)",
                   border:"1px solid rgba(255,255,255,0.1)", borderRadius:8,
                   padding:"6px 12px", pointerEvents:"none", zIndex:99, whiteSpace:"nowrap" }}>
-                <p style={{ fontFamily:"JetBrains Mono, monospace", fontSize:9, color:"rgba(255,255,255,0.5)", margin:"0 0 2px", letterSpacing:"0.08em" }}>{tooltip.day}</p>
-                <p style={{ fontFamily:"Lexend, sans-serif", fontWeight:300, fontSize:13, color:"rgba(255,255,255,0.9)", margin:0 }}>{fmtDuration(tooltip.minutes)}</p>
+                <p style={{ fontFamily:"JetBrains Mono, monospace", fontSize:9,
+                  color:"rgba(255,255,255,0.5)", margin:"0 0 2px", letterSpacing:"0.08em" }}>{tooltip.day}</p>
+                <p style={{ fontFamily:"Lexend, sans-serif", fontWeight:300, fontSize:13,
+                  color:"rgba(255,255,255,0.9)", margin:0 }}>{fmtDuration(tooltip.minutes)}</p>
               </motion.div>
             )}
           </AnimatePresence>
         </div>
       </div>
 
-      {/* ── DIVIDER ── */}
-      <div style={{ width:1, background:"rgba(255,255,255,0.055)", margin:"0 28px", flexShrink:0 }} />
+      {/* ── DIVIDER — horizontal on mobile, vertical on desktop ── */}
+      <div style={{
+        width:   isMobile ? "100%" : 1,
+        height:  isMobile ? 1      : "auto",
+        background:"rgba(255,255,255,0.055)",
+        margin:  isMobile ? "24px 0" : "0 28px",
+        flexShrink:0,
+      }} />
 
-      {/* ── RIGHT: voice note — fixed width ── */}
-      <div style={{ width:170, flexShrink:0, display:"flex", alignItems:"center", justifyContent:"center" }}>
+      {/* ── BOTTOM / RIGHT: voice note ── */}
+      <div style={{
+        width:      isMobile ? "100%" : 170,
+        height:     isMobile ? 180    : "auto",
+        flexShrink: 0,
+        display:"flex", alignItems:"center", justifyContent:"center",
+      }}>
         <VoiceNotePlayer />
       </div>
     </motion.div>
@@ -517,28 +549,45 @@ function BookCard() {
         <p style={{ fontFamily: "JetBrains Mono, monospace", fontSize: 9, letterSpacing: "0.32em", textTransform: "uppercase", color: "rgba(255,255,255,0.2)", margin: 0 }}>Currently Reading</p>
       </div>
 
-      {/* Book cover — fills the card */}
-      <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", padding: "14px 18px 0", minHeight: 0 }}>
-        <motion.div
-          whileHover={{ scale: 1.02 }}
+{/* Book cover — blurred bg fills gaps, sharp cover shown in full */}
+      <div style={{ flex: 1, position: "relative", overflow: "hidden",
+        display: "flex", alignItems: "center", justifyContent: "center",
+        minHeight: 200, padding: "0" }}>
+
+        {/* Blurred background — fills dark corners around cover */}
+        <div style={{
+          position: "absolute", inset: 0, zIndex: 0,
+          backgroundImage: `url(${coverImg})`,
+          backgroundSize: "cover", backgroundPosition: "center",
+          filter: "blur(22px) brightness(0.22) saturate(0.5)",
+          transform: "scale(1.15)",
+        }} />
+
+        {/* Soft vignette */}
+        <div style={{
+          position: "absolute", inset: 0, zIndex: 1,
+          background: "radial-gradient(ellipse at center, transparent 30%, rgba(6,6,6,0.65) 100%)",
+        }} />
+
+        {/* Actual cover — objectFit:contain so full image always visible */}
+        <motion.img
+          src={coverImg}
+          alt={title}
+          whileHover={{ scale: 1.03 }}
           transition={{ duration: 0.4, ease }}
           style={{
-            width: "100%",
-            borderRadius: 8,
-            overflow: "hidden",
-            boxShadow: "0 12px 40px rgba(0,0,0,0.85), 0 2px 0 rgba(255,255,255,0.04)",
-            background: "#111",
-            aspectRatio: "2/3",
-            maxHeight: 260,
+            position: "relative", zIndex: 2,
+            maxWidth: "82%",
+            maxHeight: "100%",
+            width: "auto",
+            height: "auto",
+            display: "block",
+            objectFit: "contain",
+            borderRadius: 6,
+            boxShadow: "0 16px 52px rgba(0,0,0,0.9), 0 2px 0 rgba(255,255,255,0.05)",
           }}
-        >
-          <img
-            src={coverImg}
-            alt={title}
-            style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
-            onError={e => { e.target.style.background = "#1a1a1a"; e.target.src = ""; }}
-          />
-        </motion.div>
+          onError={e => { e.currentTarget.style.display = "none"; }}
+        />
       </div>
 
       {/* Title + author — bottom, same visual weight as video card's title/source */}
