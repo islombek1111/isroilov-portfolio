@@ -550,9 +550,9 @@ function BookCard() {
       </div>
 
 {/* Book cover — blurred bg fills gaps, sharp cover shown in full */}
-      <div style={{ flex: 1, position: "relative", overflow: "hidden",
+      <div style={{ flexShrink: 0, height: 220, position: "relative", overflow: "hidden",
         display: "flex", alignItems: "center", justifyContent: "center",
-        minHeight: 200, padding: "0" }}>
+        padding: "0" }}>
 
         {/* Blurred background — fills dark corners around cover */}
         <div style={{
