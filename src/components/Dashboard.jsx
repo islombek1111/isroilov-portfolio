@@ -591,7 +591,7 @@ function BookCard() {
       </div>
 
       {/* Title + author — bottom, same visual weight as video card's title/source */}
-      <div style={{ padding: "14px 18px 18px", flexShrink: 0 }}>
+      <div style={{ padding: "14px 18px 18px", flexShrink: 0, marginTop: "auto" }}>
         <h4 style={{
           fontFamily: "Lexend, sans-serif", fontWeight: 300, fontSize: 14,
           color: "rgba(255,255,255,0.85)", margin: "0 0 4px",
