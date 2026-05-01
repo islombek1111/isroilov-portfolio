@@ -1,0 +1,327 @@
+---
+// MosaicReveal.astro
+// Props:
+//   src      - path to the hero image (required)
+//   alt      - alt text (optional)
+//   delay    - ms before pieces start assembling (default 1800)
+//   cols     - grid columns for piece count (default 14)
+//   rows     - grid rows for piece count (default 14)
+export interface Props {
+  src: string;
+  alt?: string;
+  delay?: number;
+  cols?: number;
+  rows?: number;
+}
+
+const {
+  src,
+  alt = "MosaicAni",
+  delay = 1800,
+  cols = 14,
+  rows = 14,
+} = Astro.props;
+---
+
+<div class="mosaic-wrapper" aria-label={alt}>
+  <canvas id="mosaicCanvas"></canvas>
+</div>
+
+<style>
+  .mosaic-wrapper {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  #mosaicCanvas {
+    display: block;
+    /* The canvas will be sized by JS to match the wrapper / image */
+    max-width: 100%;
+    max-height: 100%;
+  }
+</style>
+
+<script define:vars={{ src, delay, cols, rows }}>
+  (function () {
+    // ─── CONFIG ────────────────────────────────────────────────────────────────
+    const COLS = cols;          // horizontal piece count
+    const ROWS = rows;          // vertical piece count
+    const SCATTER_DELAY = 0;    // ms – scatter starts immediately
+    const ASSEMBLE_DELAY = delay; // ms – how long scattered state holds
+    const PIECE_STAGGER = 28;   // ms between each piece flying home
+    const FLY_DURATION = 900;   // ms for each piece's flight
+    const JIGGLE = 0.28;        // 0-1 irregularity of piece edges
+    const SCATTER_RADIUS = 1.6; // multiplier of canvas diagonal for max scatter
+
+    // ─── EASING ────────────────────────────────────────────────────────────────
+    function easeOutCubic(t) { return 1 - Math.pow(1 - t, 3); }
+    function easeInOutQuart(t) {
+      return t < 0.5 ? 8 * t * t * t * t : 1 - Math.pow(-2 * t + 2, 4) / 2;
+    }
+
+    // ─── MAIN ──────────────────────────────────────────────────────────────────
+    const canvas = document.getElementById("mosaicCanvas");
+    const ctx = canvas.getContext("2d");
+
+    const img = new Image();
+    img.crossOrigin = "anonymous";
+    img.src = src;
+
+    img.onload = () => {
+      init();
+      // Re-run on every IntersectionObserver trigger (scroll back into view)
+      setupIntersectionObserver();
+    };
+
+    let pieces = [];
+    let animFrameId = null;
+    let assembleTimeout = null;
+    let running = false;
+
+    function init() {
+      // Size canvas to image natural size (will be scaled via CSS)
+      canvas.width = img.naturalWidth;
+      canvas.height = img.naturalHeight;
+
+      buildPieces();
+      startScatter();
+    }
+
+    // ─── BUILD IRREGULAR PIECES ────────────────────────────────────────────────
+    function buildPieces() {
+      pieces = [];
+      const W = canvas.width;
+      const H = canvas.height;
+      const pw = W / COLS;
+      const ph = H / ROWS;
+
+      // Pre-generate jiggle offsets on shared interior edges
+      // Each interior vertical line x[col] and horizontal line y[row]
+      // has random offsets so adjacent pieces fit perfectly.
+      const vOffsets = []; // vOffsets[col][row] = { dx, dy } for point on col-boundary at row
+      const hOffsets = []; // hOffsets[row][col] = { dx, dy } for point on row-boundary at col
+
+      for (let c = 0; c <= COLS; c++) {
+        vOffsets[c] = [];
+        for (let r = 0; r <= ROWS; r++) {
+          // Edges of the canvas get zero offset
+          const onEdge = c === 0 || c === COLS || r === 0 || r === ROWS;
+          vOffsets[c][r] = onEdge
+            ? { dx: 0, dy: 0 }
+            : { dx: (Math.random() - 0.5) * pw * JIGGLE, dy: (Math.random() - 0.5) * ph * JIGGLE };
+        }
+      }
+
+      for (let r = 0; r <= ROWS; r++) {
+        hOffsets[r] = [];
+        for (let c = 0; c <= COLS; c++) {
+          const onEdge = c === 0 || c === COLS || r === 0 || r === ROWS;
+          hOffsets[r][c] = onEdge
+            ? { dx: 0, dy: 0 }
+            : { dx: (Math.random() - 0.5) * pw * JIGGLE, dy: (Math.random() - 0.5) * ph * JIGGLE };
+        }
+      }
+
+      for (let r = 0; r < ROWS; r++) {
+        for (let c = 0; c < COLS; c++) {
+          // Corner grid coords (before jiggle)
+          const x0 = c * pw, y0 = r * ph;
+
+          // Build a path for this piece using the shared jiggled corner points.
+          // We use the 4 corners + midpoint jiggle on each edge.
+          // TL, TR, BR, BL corners with their own small offset (interior only).
+          const corners = [
+            { // TL
+              x: x0 + vOffsets[c][r].dx + hOffsets[r][c].dx,
+              y: y0 + vOffsets[c][r].dy + hOffsets[r][c].dy
+            },
+            { // TR
+              x: x0 + pw + vOffsets[c + 1][r].dx + hOffsets[r][c + 1].dx,
+              y: y0 + vOffsets[c + 1][r].dy + hOffsets[r][c + 1].dy
+            },
+            { // BR
+              x: x0 + pw + vOffsets[c + 1][r + 1].dx + hOffsets[r + 1][c + 1].dx,
+              y: y0 + ph + vOffsets[c + 1][r + 1].dy + hOffsets[r + 1][c + 1].dy
+            },
+            { // BL
+              x: x0 + vOffsets[c][r + 1].dx + hOffsets[r + 1][c].dx,
+              y: y0 + ph + vOffsets[c][r + 1].dy + hOffsets[r + 1][c].dy
+            }
+          ];
+
+          // Centroid of this piece (used as pivot for scatter/assemble)
+          const cx = corners.reduce((s, p) => s + p.x, 0) / 4;
+          const cy = corners.reduce((s, p) => s + p.y, 0) / 4;
+
+          // Off-screen scatter destination
+          const diag = Math.sqrt(W * W + H * H);
+          const angle = Math.random() * Math.PI * 2;
+          const dist = diag * SCATTER_RADIUS * (0.5 + Math.random() * 0.5);
+          const scatterX = W / 2 + Math.cos(angle) * dist;
+          const scatterY = H / 2 + Math.sin(angle) * dist;
+          const scatterRot = (Math.random() - 0.5) * Math.PI * 2;
+
+          pieces.push({
+            corners,          // home positions
+            cx, cy,           // home centroid
+            scatterX, scatterY, scatterRot,
+            // animation state
+            phase: "scatter", // "scatter" | "flying" | "home"
+            flyStart: 0,
+            flyDelay: 0,
+            // current rendered position (offset from home centroid)
+            ox: scatterX - cx,
+            oy: scatterY - cy,
+            rot: scatterRot,
+            alpha: 0,
+          });
+        }
+      }
+    }
+
+    // ─── SCATTER ───────────────────────────────────────────────────────────────
+    function startScatter() {
+      if (running) return;
+      running = true;
+      cancelAnimations();
+
+      // Fade pieces in scattered
+      const fadeStart = performance.now();
+      const FADE_DUR = 600;
+
+      function scatterFrame(now) {
+        const t = Math.min((now - fadeStart) / FADE_DUR, 1);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        pieces.forEach(p => {
+          p.alpha = easeOutCubic(t);
+          drawPiece(p);
+        });
+        if (t < 1) {
+          animFrameId = requestAnimationFrame(scatterFrame);
+        } else {
+          // Hold, then assemble
+          assembleTimeout = setTimeout(startAssemble, ASSEMBLE_DELAY);
+        }
+      }
+      animFrameId = requestAnimationFrame(scatterFrame);
+    }
+
+    // ─── ASSEMBLE ──────────────────────────────────────────────────────────────
+    function startAssemble() {
+      // Randomise the order in which pieces fly home
+      const order = pieces.map((_, i) => i);
+      shuffle(order);
+      const startTime = performance.now();
+
+      order.forEach((idx, i) => {
+        pieces[idx].phase = "flying";
+        pieces[idx].flyDelay = i * PIECE_STAGGER;
+        pieces[idx].flyStart = startTime;
+      });
+
+      function assembleFrame(now) {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        let allHome = true;
+
+        pieces.forEach(p => {
+          if (p.phase === "scatter") {
+            drawPiece(p);
+            allHome = false;
+            return;
+          }
+          if (p.phase === "home") {
+            drawPiece(p);
+            return;
+          }
+          // flying
+          const elapsed = now - p.flyStart - p.flyDelay;
+          if (elapsed < 0) {
+            drawPiece(p); // still scattered
+            allHome = false;
+            return;
+          }
+          const t = Math.min(elapsed / FLY_DURATION, 1);
+          const e = easeInOutQuart(t);
+          p.ox = (p.scatterX - p.cx) * (1 - e);
+          p.oy = (p.scatterY - p.cy) * (1 - e);
+          p.rot = p.scatterRot * (1 - e);
+          p.alpha = 1;
+          drawPiece(p);
+          if (t < 1) allHome = false;
+          else p.phase = "home";
+        });
+
+        if (!allHome) {
+          animFrameId = requestAnimationFrame(assembleFrame);
+        } else {
+          // Draw final clean version directly
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          ctx.drawImage(img, 0, 0);
+          running = false;
+        }
+      }
+      animFrameId = requestAnimationFrame(assembleFrame);
+    }
+
+    // ─── DRAW A SINGLE PIECE ──────────────────────────────────────────────────
+    function drawPiece(p) {
+      ctx.save();
+      ctx.globalAlpha = p.alpha;
+
+      // Translate to centroid + offset, rotate
+      ctx.translate(p.cx + p.ox, p.cy + p.oy);
+      ctx.rotate(p.rot);
+      ctx.translate(-p.cx, -p.cy);
+
+      // Clip to piece polygon
+      ctx.beginPath();
+      ctx.moveTo(p.corners[0].x, p.corners[0].y);
+      for (let i = 1; i < p.corners.length; i++) {
+        ctx.lineTo(p.corners[i].x, p.corners[i].y);
+      }
+      ctx.closePath();
+      ctx.clip();
+
+      // Draw the image (B&W filter applied via CSS on canvas, or grayscale here)
+      ctx.filter = "grayscale(1)";
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      ctx.filter = "none";
+
+      ctx.restore();
+    }
+
+    // ─── UTILS ─────────────────────────────────────────────────────────────────
+    function cancelAnimations() {
+      if (animFrameId) { cancelAnimationFrame(animFrameId); animFrameId = null; }
+      if (assembleTimeout) { clearTimeout(assembleTimeout); assembleTimeout = null; }
+    }
+
+    function shuffle(arr) {
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+    }
+
+    // ─── INTERSECTION OBSERVER (replay on scroll back) ────────────────────────
+    function setupIntersectionObserver() {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting && !running) {
+              // Reset pieces and replay
+              buildPieces();
+              startScatter();
+            }
+          });
+        },
+        { threshold: 0.1 }
+      );
+      observer.observe(canvas);
+    }
+  })();
+</script>

@@ -1,5 +1,6 @@
 ---
 // Hero.astro
+import MosaicReveal from './MosaicReveal.astro';
 ---
 
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -10,11 +11,11 @@
 
   <!-- Background photo -->
   <div class="absolute inset-0 z-0">
-    <img
-      src="/images/hero.jpg"
-      alt="Islombek Isroilov"
-      class="w-full h-full object-cover object-top opacity-60"
-      style="filter: grayscale(100%) contrast(1.05);"
+    <MosaicReveal
+         src="/images/hero.jpg"
+        delay={1800}
+        cols={13}
+        rows={13}
     />
     <div class="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent"></div>
     <div class="absolute inset-0 bg-gradient-to-r from-black/55 via-transparent to-transparent"></div>
