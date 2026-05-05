@@ -12,6 +12,12 @@ import { motion, AnimatePresence } from "framer-motion";
 
 const dashboardData = {
   gym: {
+      "2026-05": {
+      days: {
+        "2026-05-05": 88,  
+      },
+    },
+
     "2026-04": {
       days: {
         "2026-04-02": 153, "2026-04-05": 108, "2026-04-06": 126,
