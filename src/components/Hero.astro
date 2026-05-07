@@ -11,12 +11,20 @@ import MosaicReveal from './MosaicReveal.astro';
 
   <!-- Background photo -->
   <div class="absolute inset-0 z-0">
-    <img
-      src="/images/hero.mp4"
-      alt="Islombek Isroilov"
-      class="w-full h-full object-cover object-top opacity-60"
-      style="filter: grayscale(100%) contrast(1.05);"
-    />
+   <video
+  autoplay
+  muted
+  loop
+  playsinline
+  disablepictureinpicture
+  class="w-full h-full object-cover object-top opacity-60"
+  style="filter: grayscale(100%) contrast(1.05);"
+  aria-hidden="true"
+>
+  <source src="/images/hero.webm" type="video/webm" />
+  <source src="/images/hero.mp4"  type="video/mp4"  />
+  <img src="/images/hero.gif" alt="Islombek Isroilov" class="w-full h-full object-cover object-top" />
+</video>
     <div class="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent"></div>
     <div class="absolute inset-0 bg-gradient-to-r from-black/55 via-transparent to-transparent"></div>
   </div>
