@@ -9,22 +9,9 @@ import MosaicReveal from './MosaicReveal.astro';
 
 <section id="home" class="relative min-h-screen flex flex-col justify-end pb-16 md:pb-24 px-6 md:px-12 overflow-hidden">
 
-  <!-- Background photo -->
+  <!-- Background: canvas binary/matrix effect driven by hero.jpg -->
   <div class="absolute inset-0 z-0">
-   <video
-  autoplay
-  muted
-  loop
-  playsinline
-  disablepictureinpicture
-  class="w-full h-full object-cover object-top opacity-60"
-  style="filter: grayscale(100%) contrast(1.05);"
-  aria-hidden="true"
->
-  <source src="/images/hero.webm" type="video/webm" />
-  <source src="/images/hero.mp4"  type="video/mp4"  />
-  <img src="/images/hero.gif" alt="Islombek Isroilov" class="w-full h-full object-cover object-top" />
-</video>
+    <canvas id="binaryCanvas" class="absolute inset-0 w-full h-full" aria-hidden="true"></canvas>
     <div class="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent"></div>
     <div class="absolute inset-0 bg-gradient-to-r from-black/55 via-transparent to-transparent"></div>
   </div>
@@ -408,4 +395,167 @@ toggle?.addEventListener("click", () => {
     chevron?.classList.remove("open");
   }
 });
+</script>
+
+<script>
+// ── Binary canvas background ─────────────────────────────────
+// Reads hero.jpg pixel brightness → renders animated 0/1 chars
+// that match the light/dark regions of the photo.
+
+(function () {
+  const canvas  = document.getElementById("binaryCanvas") as HTMLCanvasElement;
+  const ctx     = canvas.getContext("2d")!;
+
+  const FONT_SIZE  = 11;       // px — character cell size
+  const CHARS      = "01";
+  const FPS        = 18;       // animation frame rate
+  const FRAME_MS   = 1000 / FPS;
+
+  // Per-cell state
+  type Cell = { char: string; opacity: number; targetOpacity: number; flickerTimer: number };
+  let cells: Cell[][] = [];
+  let cols = 0, rows = 0;
+  let brightnessMap: number[][] = [];   // 0–1 per cell
+  let animId = 0;
+  let lastFrame = 0;
+  let ready = false;
+
+  // ── Size canvas to fill its CSS size ──
+  function resize() {
+    const rect = canvas.getBoundingClientRect();
+    canvas.width  = rect.width;
+    canvas.height = rect.height;
+    if (ready) buildGrid();
+  }
+
+  // ── Sample the image into a per-cell brightness grid ──
+  function sampleImage(img: HTMLImageElement) {
+    // Draw image into an offscreen canvas, sample each cell region
+    const off = document.createElement("canvas");
+    // Sample at cell resolution (much smaller than full res)
+    cols = Math.ceil(canvas.width  / FONT_SIZE);
+    rows = Math.ceil(canvas.height / FONT_SIZE);
+    off.width  = cols;
+    off.height = rows;
+
+    const octx = off.getContext("2d")!;
+    // Cover-crop the image the same way object-cover object-top does
+    const imgAspect    = img.naturalWidth / img.naturalHeight;
+    const canvasAspect = canvas.width / canvas.height;
+    let sx = 0, sy = 0, sw = img.naturalWidth, sh = img.naturalHeight;
+    if (imgAspect > canvasAspect) {
+      // Image wider than canvas — crop sides
+      sw = img.naturalHeight * canvasAspect;
+      sx = (img.naturalWidth - sw) / 2;
+    } else {
+      // Image taller than canvas — crop bottom (object-top)
+      sh = img.naturalWidth / canvasAspect;
+      sy = 0;
+    }
+    octx.drawImage(img, sx, sy, sw, sh, 0, 0, cols, rows);
+
+    const data = octx.getImageData(0, 0, cols, rows).data;
+    brightnessMap = [];
+    for (let r = 0; r < rows; r++) {
+      brightnessMap[r] = [];
+      for (let c = 0; c < cols; c++) {
+        const idx = (r * cols + c) * 4;
+        const lum = (data[idx] * 0.299 + data[idx+1] * 0.587 + data[idx+2] * 0.114) / 255;
+        brightnessMap[r][c] = lum;
+      }
+    }
+  }
+
+  // ── Build cell grid from brightness map ──
+  function buildGrid() {
+    cells = [];
+    for (let r = 0; r < rows; r++) {
+      cells[r] = [];
+      for (let c = 0; c < cols; c++) {
+        const lum = brightnessMap[r]?.[c] ?? 0;
+        // Darker pixels → lower opacity (more invisible), brighter → visible
+        // But we invert because the photo bg is dark = face is lighter
+        const base = lum * 0.75;
+        cells[r][c] = {
+          char:         CHARS[Math.floor(Math.random() * CHARS.length)],
+          opacity:      base,
+          targetOpacity: base,
+          flickerTimer: Math.random() * 120,
+        };
+      }
+    }
+  }
+
+  // ── Animation loop ──
+  function draw(ts: number) {
+    animId = requestAnimationFrame(draw);
+    if (ts - lastFrame < FRAME_MS) return;
+    lastFrame = ts;
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.font = `${FONT_SIZE}px monospace`;
+
+    for (let r = 0; r < rows; r++) {
+      for (let c = 0; c < cols; c++) {
+        const cell = cells[r][c];
+        const lum  = brightnessMap[r]?.[c] ?? 0;
+
+        // Random character flip weighted by brightness
+        cell.flickerTimer--;
+        if (cell.flickerTimer <= 0) {
+          cell.char = CHARS[Math.floor(Math.random() * CHARS.length)];
+          // Brighter cells flicker faster
+          cell.flickerTimer = 8 + Math.random() * (80 - lum * 60);
+          // Occasionally nudge opacity toward a new random target
+          if (Math.random() < 0.3) {
+            const base = lum * 0.75;
+            cell.targetOpacity = base * (0.4 + Math.random() * 0.6);
+          }
+        }
+
+        // Ease opacity toward target
+        cell.opacity += (cell.targetOpacity - cell.opacity) * 0.08;
+
+        if (cell.opacity < 0.012) continue; // skip invisible cells
+
+        ctx.fillStyle = `rgba(255,255,255,${cell.opacity.toFixed(3)})`;
+        ctx.fillText(cell.char, c * FONT_SIZE, r * FONT_SIZE + FONT_SIZE);
+      }
+    }
+  }
+
+  // ── Bootstrap ──
+  function init() {
+    resize();
+    const img = new Image();
+    img.crossOrigin = "anonymous";
+    img.src = "/images/hero.jpg";
+    img.onload = () => {
+      sampleImage(img);
+      buildGrid();
+      ready = true;
+      cancelAnimationFrame(animId);
+      animId = requestAnimationFrame(draw);
+    };
+    img.onerror = () => {
+      // If image fails (CORS etc), still run with random brightness
+      cols = Math.ceil(canvas.width  / FONT_SIZE);
+      rows = Math.ceil(canvas.height / FONT_SIZE);
+      brightnessMap = Array.from({ length: rows }, () =>
+        Array.from({ length: cols }, () => Math.random() * 0.6)
+      );
+      buildGrid();
+      ready = true;
+      animId = requestAnimationFrame(draw);
+    };
+  }
+
+  window.addEventListener("resize", () => { resize(); });
+  // Wait for layout to settle
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", init);
+  } else {
+    init();
+  }
+})();
 </script>
