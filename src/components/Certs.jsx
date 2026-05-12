@@ -9,6 +9,7 @@ const CERTS = [
     { img: "/images/certs/IELTS3.jpg", title: "IELTS Academic", score: "6.0" },
     { img: "/images/certs/IELTS2.jpg", title: "IELTS Academic", score: "6.5" },
     { img: "/images/certs/IELTS1.jpg", title: "IELTS Academic", score: "7.5" },
+    { img: "/images/certs/IELTS4.jpg", title: "IELTS Academic", score: "7.5" },
   ]},
 ];
 
