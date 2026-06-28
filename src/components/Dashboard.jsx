@@ -12,13 +12,22 @@ import { motion, AnimatePresence } from "framer-motion";
 
 const dashboardData = {
   gym: {
+
+   "2026-06": {
+      days: {
+        "2026-06-03": 80, "2026-06-04": 112, "2026-06-05": 95,
+       "2026-06-09": 134, "2026-06-10": 75 , "2026-06-11": 116,
+       "2026-06-13": 77, "2026-06-14": 64, "2026-06-17": 90, 
+       "2026-06-18": 57, "2026-06-22": 68, "2026-06-23": 71,
+      "2026-06-27": 86, "2026-06-28": 115,
+      },
       "2026-05": {
       days: {
         "2026-05-05": 88,   "2026-05-06": 118,  "2026-05-07": 100, 
         "2026-05-10": 125,  "2026-05-12": 100, "2026-05-15": 115,
         "2026-05-18": 92,  "2026-05-22": 101, "2026-05-23": 112,
         "2026-05-24": 109, "2026-05-26": 60, "2026-05-27": 63,
-        "2026-05-28": 82,
+        "2026-05-28": 82, "2026-05-30": 132,
       },
     },
 
@@ -47,16 +56,17 @@ const dashboardData = {
   },
 
   book: {
-    title: "MADE to Stick",
-    author: "Chip & Dan Heath",
-    coverImg: "/images/books/madetostick.jpg",
+    title: "Nuclear Inc: The Men and Money Behind Nuclear Energy",
+    author: " Mark Hertsgaard ",
+    coverImg: "/images/books/nuclear.jpg",
   },
 
   video: {
-    videoId: "SvKv7D4pBjE",
-    title: "Norman Ohler: Hitler, Nazis, Drugs, WW2, Blitzkrieg, LSD, MKUltra & CIA",
-    source: "Lex Fridman",
+    videoId: "3Wi_zQX--wE",
+    title: "Every Major War Begins Under False Pretenses & the Central Banks Are Behind It",
+    source: "Tucker Carlson",
     history: [
+       { videoId: "SvKv7D4pBjE", title: "Norman Ohler: Hitler, Nazis, Drugs, WW2, Blitzkrieg, LSD, MKUltra & CIA", source: "Lex Fridman" },
       { videoId: "JW9gcjpt89o", title: "Three Scientists on the Origins of Everything", source: "Hoover Institution" },
       { videoId: "B7yr4WfDKiY", title: "Reading and the art of conversation", source: "Woanderings" },
       { videoId: "n6HFghr9DGQ", title: "The Middle Class Is COLLAPSING", source: "Novara Media" },
